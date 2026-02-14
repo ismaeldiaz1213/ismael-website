@@ -1,22 +1,23 @@
-import { BlogCard, Section, SectionHeader } from '../components/ui'
+// import { BlogCard, Section, SectionHeader } from '../components/ui'
+import { Section, SectionHeader } from '../components/ui'
 
 export function DukeThoughts() {
-  const posts = [
-    {
-      id: 1,
-      title: '[Course Name/Code]',
-      excerpt: '[Brief excerpt or summary of your thoughts on this class. What was it about? What did you learn? What surprised you?]',
-      date: 'January 2026',
-      tags: ['Duke', 'Coursework', '[Category]'],
-    },
-    {
-      id: 2,
-      title: '[Course Name/Code]',
-      excerpt: '[Brief excerpt or summary of your thoughts on this class. Was it challenging? Inspiring? What will you take from it?]',
-      date: 'December 2025',
-      tags: ['Duke', 'Coursework', '[Category]'],
-    },
-  ]
+//   const posts = [
+//     {
+//       id: 1,
+//       title: '[Course Name/Code]',
+//       excerpt: '[Brief excerpt or summary of your thoughts on this class. What was it about? What did you learn? What surprised you?]',
+//       date: 'January 2026',
+//       tags: ['Duke', 'Coursework', '[Category]'],
+//     },
+//     {
+//       id: 2,
+//       title: '[Course Name/Code]',
+//       excerpt: '[Brief excerpt or summary of your thoughts on this class. Was it challenging? Inspiring? What will you take from it?]',
+//       date: 'December 2025',
+//       tags: ['Duke', 'Coursework', '[Category]'],
+//     },
+//   ]
 
   return (
     <main>

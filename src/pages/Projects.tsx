@@ -1,24 +1,25 @@
-import { ProjectCard, Section, SectionHeader, Button } from '../components/ui'
+// import { ProjectCard, Section, SectionHeader, Button } from '../components/ui'
+import { Section, SectionHeader } from '../components/ui'
 
 export function Projects() {
-  const projects = [
-    {
-      id: 1,
-      title: '[Project Title #1]',
-      description: '[Brief description of your first project. What was the problem? What technologies did you use? What was the impact?]',
-      tags: ['React', 'TypeScript', 'Tailwind CSS'],
-      date: 'January 2026',
-      icon: '🚀',
-    },
-    {
-      id: 2,
-      title: '[Project Title #2]',
-      description: '[Brief description of your second project. What problem did it solve? What technologies were involved? What did you learn?]',
-      tags: ['Python', 'Machine Learning', 'Data Science'],
-      date: 'December 2025',
-      icon: '🤖',
-    },
-  ]
+//   const projects = [
+//     {
+//       id: 1,
+//       title: '[Project Title #1]',
+//       description: '[Brief description of your first project. What was the problem? What technologies did you use? What was the impact?]',
+//       tags: ['React', 'TypeScript', 'Tailwind CSS'],
+//       date: 'January 2026',
+//       icon: '🚀',
+//     },
+//     {
+//       id: 2,
+//       title: '[Project Title #2]',
+//       description: '[Brief description of your second project. What problem did it solve? What technologies were involved? What did you learn?]',
+//       tags: ['Python', 'Machine Learning', 'Data Science'],
+//       date: 'December 2025',
+//       icon: '🤖',
+//     },
+//   ]
 
   return (
     <main>
