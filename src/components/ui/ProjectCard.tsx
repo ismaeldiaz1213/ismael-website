@@ -9,6 +9,8 @@ interface ProjectCardProps {
   tags: string[]
   date: string
   icon?: string
+  category?: string
+  semester?: string
 }
 
 export function ProjectCard({
@@ -18,6 +20,8 @@ export function ProjectCard({
   tags,
   date,
   icon = '📁',
+  category,
+  semester,
 }: ProjectCardProps) {
   return (
     <Link to={`/projects/${id}`}>
@@ -36,6 +40,18 @@ export function ProjectCard({
                   {title}
                 </h3>
                 <span className="text-sm text-slate-500 whitespace-nowrap">{date}</span>
+              </div>
+
+              <div className="flex gap-2 mb-3">
+                {category ? (
+                  <Badge variant={category.toLowerCase() === 'hardware' ? 'orange' : category.toLowerCase() === 'software' ? 'primary' : 'secondary'}>
+                    {category}
+                  </Badge>
+                ) : null}
+
+                {semester ? (
+                  <Badge variant="secondary">{semester}</Badge>
+                ) : null}
               </div>
 
               <p className="text-slate-400">{description}</p>

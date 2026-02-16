@@ -1,23 +1,21 @@
-// import { BlogCard, Section, SectionHeader } from '../components/ui'
+import { useEffect, useState } from 'react'
 import { Section, SectionHeader } from '../components/ui'
+import PostList from '../components/ui/PostList'
+import { getPosts } from '../lib/posts'
 
 export function DukeThoughts() {
-//   const posts = [
-//     {
-//       id: 1,
-//       title: '[Course Name/Code]',
-//       excerpt: '[Brief excerpt or summary of your thoughts on this class. What was it about? What did you learn? What surprised you?]',
-//       date: 'January 2026',
-//       tags: ['Duke', 'Coursework', '[Category]'],
-//     },
-//     {
-//       id: 2,
-//       title: '[Course Name/Code]',
-//       excerpt: '[Brief excerpt or summary of your thoughts on this class. Was it challenging? Inspiring? What will you take from it?]',
-//       date: 'December 2025',
-//       tags: ['Duke', 'Coursework', '[Category]'],
-//     },
-//   ]
+  const [posts, setPosts] = useState<any[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    getPosts().then((p) => {
+      if (mounted) setPosts(p)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
 
   return (
     <main>
@@ -30,14 +28,18 @@ export function DukeThoughts() {
         />
       </Section>
 
-      {/* Coming Soon */}
+      {/* Posts */}
       <Section>
-        <div className="text-center py-12">
-          <h2 className="text-4xl font-bold text-slate-200 mb-4">Coming Soon</h2>
-          <p className="text-slate-300 text-lg max-w-2xl mx-auto">
-            I'm working on sharing my thoughts and reflections on the courses I've taken at Duke. Check back soon for updates!
-          </p>
-        </div>
+        {posts.length === 0 ? (
+          <div className="text-center py-12">
+            <h3 className="text-2xl font-semibold text-slate-100">Coming soon</h3>
+            <p className="text-slate-300">No posts yet — create a markdown file in <code>src/content/posts</code> to add one.</p>
+          </div>
+        ) : (
+          <div className="mt-8">
+            <PostList posts={posts} />
+          </div>
+        )}
       </Section>
     </main>
   )

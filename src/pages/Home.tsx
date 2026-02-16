@@ -18,13 +18,9 @@ export function Home() {
         }
         actions={[
           {
-            label: 'View My Projects',
-            href: '/projects',
+            label: 'View My Resume',
+            href: '/resume',
             variant: 'primary',
-          },
-          {
-            label: 'Download Resume',
-            variant: 'secondary',
           },
         ]}
       />
@@ -33,13 +29,13 @@ export function Home() {
       <Section variant="gradient">
         <SectionHeader
           title="Featured"
-          subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have decent progress made! Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken. It is mostly me just yapping about what I thought about what I learned, what I struggled with, and things future students should note when building their schedules."
+          subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have made decent progress. Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken. It is mostly me just sharing my thoughts on what I learned, what I struggled with, and things future students should note when building their schedules with these courses in mind."
         />
 
         <div className="grid md:grid-cols-2 gap-8 mt-12">
           <FeatureCard
             title="Check Out My Work"
-            description="A collection of projects I've built showcasing my technical skills"
+            description="A collection of projects I've built showcasing some of my technical skills"
             icon="📁"
             href="/projects"
             accent="blue"
@@ -49,7 +45,7 @@ export function Home() {
             title="My Duke Course Experience"
             description="Reflections on my courses at Duke"
             icon="💭"
-            href="/duke-thoughts"
+            href="/duke-courses"
             accent="orange"
           />
         </div>
@@ -64,7 +60,7 @@ export function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="primary" size="lg" href="mailto:ismael.diaz@duke.edu">
-              Get in Touch
+              Email Me
             </Button>
             <Button
               variant="secondary"

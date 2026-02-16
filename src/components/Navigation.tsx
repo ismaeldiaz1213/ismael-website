@@ -22,7 +22,7 @@ export function Navigation() {
           <div className="hidden md:flex items-center gap-8">
             <Link to="/" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Home</Link>
             <Link to="/projects" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Projects</Link>
-            <Link to="/duke-thoughts" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Duke Courses</Link>
+            <Link to="/duke-courses" className="text-gray-300 hover:text-white transition-colors text-sm font-medium">Duke Courses</Link>
             
             <div className="flex gap-4 pl-4 border-l border-purple-500/30">
               <a href="https://www.linkedin.com/in/ismael-diaz-/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-orange-400 transition-colors">
@@ -58,7 +58,7 @@ export function Navigation() {
             <Link to="/projects" className="block text-gray-300 hover:text-white transition-colors text-sm font-medium py-2">
               Projects
             </Link>
-            <Link to="/duke-thoughts" className="block text-gray-300 hover:text-white transition-colors text-sm font-medium py-2">
+            <Link to="/duke-courses" className="block text-gray-300 hover:text-white transition-colors text-sm font-medium py-2">
               Duke Courses
             </Link>
             

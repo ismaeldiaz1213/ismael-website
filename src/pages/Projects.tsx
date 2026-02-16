@@ -1,25 +1,21 @@
 // import { ProjectCard, Section, SectionHeader, Button } from '../components/ui'
 import { Section, SectionHeader } from '../components/ui'
+import ProjectList from '../components/ui/ProjectList'
+import { getProjects } from '../lib/projects'
+import { useEffect, useState } from 'react'
 
 export function Projects() {
-//   const projects = [
-//     {
-//       id: 1,
-//       title: '[Project Title #1]',
-//       description: '[Brief description of your first project. What was the problem? What technologies did you use? What was the impact?]',
-//       tags: ['React', 'TypeScript', 'Tailwind CSS'],
-//       date: 'January 2026',
-//       icon: '🚀',
-//     },
-//     {
-//       id: 2,
-//       title: '[Project Title #2]',
-//       description: '[Brief description of your second project. What problem did it solve? What technologies were involved? What did you learn?]',
-//       tags: ['Python', 'Machine Learning', 'Data Science'],
-//       date: 'December 2025',
-//       icon: '🤖',
-//     },
-//   ]
+  const [projects, setProjects] = useState<any[]>([])
+
+  useEffect(() => {
+    let mounted = true
+    getProjects().then((p) => {
+      if (mounted) setProjects(p)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
 
   return (
     <main>
@@ -34,15 +30,11 @@ export function Projects() {
 
       {/* Projects Grid */}
       <Section>
-        {/* <div className="space-y-8">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} {...project} />
-          ))}
-        </div> */}
+        <ProjectList projects={projects} />
 
         {/* Call to Action */}
         <div className="mt-16 p-8 rounded-lg bg-gradient-to-r from-blue-900/20 to-orange-900/20 border border-purple-500/30 text-center">
-          <h3 className="text-2xl font-bold text-slate-100 mb-2">Coming Soon</h3>
+          <h3 className="text-2xl font-bold text-slate-100 mb-2">Want to see more?</h3>
           <p className="text-slate-300">
             I'm working on some exciting projects! Check back soon for updates.
           </p>
