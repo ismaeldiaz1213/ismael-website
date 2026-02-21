@@ -1,10 +1,11 @@
-type FrontMatter = {
+interface FrontMatter {
   title?: string
   date?: string
   tags?: string[]
   excerpt?: string
   category?: string
   semester?: string
+  published?: boolean
 }
 
 function parseFrontmatter(raw: string): FrontMatter {
@@ -38,6 +39,8 @@ function parseFrontmatter(raw: string): FrontMatter {
       out.category = val
     } else if (key === 'semester') {
       out.semester = val
+    } else if (key === 'published') {
+      out.published = val.toLowerCase() === 'true'
     }
   }
   return out
@@ -46,7 +49,7 @@ function parseFrontmatter(raw: string): FrontMatter {
 // Updated to use `query: '?raw', import: 'default'` per deprecation notice
 const modules = import.meta.glob('../content/projects/*.md', { query: '?raw', import: 'default' })
 
-export type Project = {
+export interface Project {
   slug: string
   title: string
   date?: string
@@ -55,6 +58,7 @@ export type Project = {
   category?: string
   semester?: string
   content: string
+  published: boolean
 }
 
 export async function getProjects(): Promise<Project[]> {
@@ -78,19 +82,22 @@ export async function getProjects(): Promise<Project[]> {
         date: fm.date,
         tags: fm.tags,
         excerpt,
-        category: (fm as any).category,
-        semester: (fm as any).semester,
+        category: fm.category,
+        semester: fm.semester,
         content,
-      } as Project
+        published: fm.published !== false,
+      } satisfies Project
     }),
   )
 
-  projects.sort((a, b) => {
+  // Filter published projects and sort by date (newest first)
+  const publishedProjects = projects.filter((p) => p.published)
+  publishedProjects.sort((a, b) => {
     if (!a.date || !b.date) return 0
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 
-  return projects
+  return publishedProjects
 }
 
 export async function getProject(slug: string): Promise<Project | null> {
@@ -111,10 +118,11 @@ export async function getProject(slug: string): Promise<Project | null> {
         date: fm.date,
         tags: fm.tags,
         excerpt: fm.excerpt,
-        category: (fm as any).category,
-        semester: (fm as any).semester,
+        category: fm.category,
+        semester: fm.semester,
         content,
-      }
+        published: fm.published !== false,
+      } satisfies Project
     }
   }
   return null

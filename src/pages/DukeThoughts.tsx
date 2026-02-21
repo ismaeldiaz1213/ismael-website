@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Section, SectionHeader } from '../components/ui'
 import PostList from '../components/ui/PostList'
-import { getPosts } from '../lib/posts'
+import { getPosts, type Post } from '../lib/posts'
 
 export function DukeThoughts() {
-  const [posts, setPosts] = useState<any[]>([])
+  const [posts, setPosts] = useState<Post[]>([])
 
   useEffect(() => {
     let mounted = true
@@ -33,7 +33,7 @@ export function DukeThoughts() {
         {posts.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-2xl font-semibold text-slate-100">Coming soon</h3>
-            <p className="text-slate-300">No posts yet — create a markdown file in <code>src/content/posts</code> to add one.</p>
+            <p className="text-slate-300">No posts yet! Slowly but surely these posts will start filtering in!</p>
           </div>
         ) : (
           <div className="mt-8">

@@ -4,12 +4,12 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
-import { getPost } from '../lib/posts'
+import { getPost, type Post } from '../lib/posts'
 
 export function DukeThoughtDetail() {
   const { id } = useParams()
   const slug = id || ''
-  const [post, setPost] = useState<any | null>(null)
+  const [post, setPost] = useState<Post | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

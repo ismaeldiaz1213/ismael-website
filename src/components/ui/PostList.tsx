@@ -1,32 +1,23 @@
 import { BlogCard } from './BlogCard'
-
-interface PostSummary {
-  slug: string
-  title: string
-  date?: string
-  excerpt?: string
-  tags?: string[]
-  category?: string
-  semester?: string
-}
+import { type Post } from '../../lib/posts'
 
 interface PostListProps {
-  posts: PostSummary[]
+  posts: Post[]
 }
 
 export function PostList({ posts }: PostListProps) {
   return (
     <div className="grid md:grid-cols-2 gap-6">
-      {posts.map((p) => (
+      {posts.map((post) => (
         <BlogCard
-          key={p.slug}
-          title={p.title}
-          date={p.date || ''}
-          excerpt={p.excerpt || ''}
-          tags={p.tags}
-          category={(p as any).category}
-          semester={(p as any).semester}
-          href={`/duke-courses/${p.slug}`}
+          key={post.slug}
+          title={post.title}
+          date={post.date || ''}
+          excerpt={post.excerpt || ''}
+          tags={post.tags}
+          category={post.category}
+          semester={post.semester}
+          href={`/duke-courses/${post.slug}`}
         />
       ))}
     </div>

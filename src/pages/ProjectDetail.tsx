@@ -4,13 +4,13 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
-import { getProject } from '../lib/projects'
+import { getProject, type Project } from '../lib/projects'
 import { AnchorNavigator, type Heading } from '../components/AnchorNavigator'
 
 export function ProjectDetail() {
   const { id } = useParams()
   const slug = id || ''
-  const [project, setProject] = useState<any | null>(null)
+  const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)
   const [headings, setHeadings] = useState<Heading[]>([])
 
@@ -72,10 +72,10 @@ export function ProjectDetail() {
   }
 
   // Custom markdown components to add IDs to headings
-  const markdownComponents = {
+  const markdownComponents: Record<string, React.ComponentType<any>> = {
     h2: ({ children }: any) => {
-      const text = children[0]
-      const id = (text as string)
+      const text = Array.isArray(children) ? children.join('') : String(children)
+      const id = text
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
@@ -83,8 +83,8 @@ export function ProjectDetail() {
       return <h2 id={id} className="scroll-mt-24">{children}</h2>
     },
     h3: ({ children }: any) => {
-      const text = children[0]
-      const id = (text as string)
+      const text = Array.isArray(children) ? children.join('') : String(children)
+      const id = text
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')

@@ -1,10 +1,11 @@
-type FrontMatter = {
+interface FrontMatter {
   title?: string
   date?: string
   tags?: string[]
   excerpt?: string
   category?: string
   semester?: string
+  published?: boolean
 }
 
 function parseFrontmatter(raw: string): FrontMatter {
@@ -40,6 +41,8 @@ function parseFrontmatter(raw: string): FrontMatter {
       out.category = val
     } else if (key === 'semester') {
       out.semester = val
+    } else if (key === 'published') {
+      out.published = val.toLowerCase() === 'true'
     }
   }
   return out
@@ -49,7 +52,7 @@ function parseFrontmatter(raw: string): FrontMatter {
 // Updated to use `query: '?raw', import: 'default'` per deprecation notice
 const modules = import.meta.glob('../content/posts/*.md', { query: '?raw', import: 'default' })
 
-export type Post = {
+export interface Post {
   slug: string
   title: string
   date?: string
@@ -58,6 +61,7 @@ export type Post = {
   category?: string
   semester?: string
   content: string
+  published: boolean
 }
 
 export async function getPosts(): Promise<Post[]> {
@@ -81,20 +85,22 @@ export async function getPosts(): Promise<Post[]> {
         date: fm.date,
         tags: fm.tags,
         excerpt,
-        category: (fm as any).category,
-        semester: (fm as any).semester,
+        category: fm.category,
+        semester: fm.semester,
         content,
-      } as Post
+        published: fm.published !== false,
+      } satisfies Post
     }),
   )
 
-  // sort by date (newest first) if date present
-  posts.sort((a, b) => {
+  // Filter published posts and sort by date (newest first)
+  const publishedPosts = posts.filter((p) => p.published)
+  publishedPosts.sort((a, b) => {
     if (!a.date || !b.date) return 0
     return new Date(b.date).getTime() - new Date(a.date).getTime()
   })
 
-  return posts
+  return publishedPosts
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
@@ -115,10 +121,11 @@ export async function getPost(slug: string): Promise<Post | null> {
         date: fm.date,
         tags: fm.tags,
         excerpt: fm.excerpt,
-        category: (fm as any).category,
-        semester: (fm as any).semester,
+        category: fm.category,
+        semester: fm.semester,
         content,
-      }
+        published: fm.published !== false,
+      } satisfies Post
     }
   }
   return null

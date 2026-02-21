@@ -1,11 +1,11 @@
 // import { ProjectCard, Section, SectionHeader, Button } from '../components/ui'
 import { Section, SectionHeader } from '../components/ui'
 import ProjectList from '../components/ui/ProjectList'
-import { getProjects } from '../lib/projects'
+import { getProjects, type Project } from '../lib/projects'
 import { useEffect, useState } from 'react'
 
 export function Projects() {
-  const [projects, setProjects] = useState<any[]>([])
+  const [projects, setProjects] = useState<Project[]>([])
 
   useEffect(() => {
     let mounted = true
