@@ -5,4 +5,4 @@ tags: [gem5, Computer Architecture]
 excerpt: "Creating an IEEE-like floating point approximate adder for my ECE 552 course"
 ---
 
-More information coming soon!
+More information coming soon! For now, check my linkedIn for more details on that.

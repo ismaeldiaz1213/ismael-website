@@ -1,16 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import { getProject } from '../lib/projects'
+import { AnchorNavigator, type Heading } from '../components/AnchorNavigator'
 
 export function ProjectDetail() {
   const { id } = useParams()
   const slug = id || ''
   const [project, setProject] = useState<any | null>(null)
   const [loading, setLoading] = useState(true)
+  const [headings, setHeadings] = useState<Heading[]>([])
 
   useEffect(() => {
     let mounted = true
@@ -24,6 +26,29 @@ export function ProjectDetail() {
       mounted = false
     }
   }, [slug])
+
+  // Extract headings from markdown
+  useMemo(() => {
+    if (!project?.content) return
+    
+    const headingRegex = /^(#{2,3})\s+(.+)$/gm
+    const extractedHeadings: Heading[] = []
+    let match
+
+    while ((match = headingRegex.exec(project.content)) !== null) {
+      const level = match[1].length
+      const text = match[2]
+      const id = text
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+
+      extractedHeadings.push({ id, text, level })
+    }
+
+    setHeadings(extractedHeadings)
+  }, [project?.content])
 
   if (loading) {
     return (
@@ -44,6 +69,28 @@ export function ProjectDetail() {
         </div>
       </main>
     )
+  }
+
+  // Custom markdown components to add IDs to headings
+  const markdownComponents = {
+    h2: ({ children }: any) => {
+      const text = children[0]
+      const id = (text as string)
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+      return <h2 id={id} className="scroll-mt-24">{children}</h2>
+    },
+    h3: ({ children }: any) => {
+      const text = children[0]
+      const id = (text as string)
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+      return <h3 id={id} className="scroll-mt-24">{children}</h3>
+    },
   }
 
   return (
@@ -75,8 +122,13 @@ export function ProjectDetail() {
       {/* Content */}
       <article className="py-16 px-6">
         <div className="max-w-3xl mx-auto">
+          <AnchorNavigator headings={headings} />
           <div className="prose prose-invert prose-lg max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw, rehypeSanitize]}>
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]} 
+              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+              components={markdownComponents}
+            >
               {project.content}
             </ReactMarkdown>
           </div>
