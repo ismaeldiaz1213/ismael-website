@@ -32,8 +32,8 @@ export function DukeThoughts() {
       <Section>
         {posts.length === 0 ? (
           <div className="text-center py-12">
-            <h3 className="text-2xl font-semibold text-slate-100">Coming soon</h3>
-            <p className="text-slate-300">No posts yet! Slowly but surely these posts will start filtering in!</p>
+            <h3 className="text-2xl font-semibold" style={{ color: 'var(--color-text)' }}>Coming soon</h3>
+            <p style={{ color: 'var(--color-accent)', opacity: 0.7 }}>No posts yet! Slowly but surely these posts will start filtering in!</p>
           </div>
         ) : (
           <div className="mt-8">

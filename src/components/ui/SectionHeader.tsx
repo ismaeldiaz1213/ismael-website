@@ -13,11 +13,13 @@ export function SectionHeader({
 
   return (
     <div className={textAlign}>
-      <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 via-rose-400 to-orange-400 bg-clip-text text-transparent mb-3">
+      <h2 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: '#1a5f7a' }}>
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg text-rose-300 max-w-2xl mx-auto">{subtitle}</p>
+        <p className="text-lg max-w-2xl mx-auto" style={{ color: '#a0a0a0', opacity: 0.8 }}>
+          {subtitle}
+        </p>
       )}
     </div>
   )

@@ -22,13 +22,13 @@ export function Button({
 
   const variantStyles = {
     primary:
-      'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600 active:from-blue-800 active:to-blue-900 shadow-lg hover:shadow-xl',
+      'bg-[#0f3a52] text-[#e8f1f5] hover:bg-[#1a5f7a] active:bg-[#061e2a] shadow-lg hover:shadow-[0_0_20px_rgba(0,217,255,0.3)]',
     secondary:
-      'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-400 hover:to-orange-500 active:from-orange-700 active:to-orange-800 shadow-lg hover:shadow-xl',
+      'border-2 border-[#00d9ff] text-[#00d9ff] hover:bg-[#00d9ff]/10 active:bg-[#00d9ff]/20 shadow-md hover:shadow-[0_0_15px_rgba(0,217,255,0.3)]',
     outline:
-      'border-2 border-blue-600 text-blue-300 hover:bg-blue-900/30 active:bg-blue-900/50',
+      'border-2 border-[#1a5f7a] text-[#00d9ff] hover:bg-[#1a5f7a]/20 active:bg-[#1a5f7a]/40',
     ghost:
-      'text-blue-300 hover:bg-slate-700/50 active:bg-slate-600/50',
+      'text-[#00d9ff] hover:bg-[#0f3a52]/50 active:bg-[#0f3a52]/70',
   }
 
   const sizeStyles = {

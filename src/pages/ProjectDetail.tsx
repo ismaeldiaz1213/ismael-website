@@ -53,7 +53,7 @@ export function ProjectDetail() {
   if (loading) {
     return (
       <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
-        <div className="text-center text-slate-300">Loading…</div>
+        <div className="text-center" style={{ color: 'var(--color-accent)' }}>Loading…</div>
       </main>
     )
   }
@@ -62,8 +62,8 @@ export function ProjectDetail() {
     return (
       <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">Project not found</h1>
-          <Link to="/projects" className="text-blue-400 hover:text-blue-300">
+          <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-text)' }}>Project not found</h1>
+          <Link to="/projects" style={{ color: 'var(--color-accent)' }}>
             ← Back to Projects
           </Link>
         </div>
@@ -96,26 +96,27 @@ export function ProjectDetail() {
   return (
     <main className="min-h-[calc(100vh-80px)]">
       {/* Header with background */}
-      <section className="py-16 px-6 border-b border-white/10 bg-gradient-to-r from-blue-900/20 to-cyan-900/20">
+      <section className="py-16 px-6 border-b" style={{ borderColor: 'var(--color-border)', backgroundColor: 'rgba(23, 66, 91, 0.3)' }}>
         <div className="max-w-3xl mx-auto">
-          <Link to="/projects" className="text-blue-400 hover:text-blue-300 flex items-center gap-2 mb-6">
+          <Link to="/projects" className="flex items-center gap-2 mb-6" style={{ color: 'var(--color-accent)' }}>
             ← Back to Projects
           </Link>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">{project.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3" style={{ color: 'var(--color-text)' }}>{project.title}</h1>
           {project.tags?.length ? (
             <div className="flex flex-wrap gap-2 mb-6">
               {project.tags.map((tag: string) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-sm bg-white/10 border border-white/20 text-slate-300 rounded-full"
+                  className="px-3 py-1 text-sm rounded-full"
+                  style={{ backgroundColor: 'rgba(129, 195, 215, 0.1)', border: '1px solid var(--color-border)', color: 'var(--color-accent)' }}
                 >
                   {tag}
                 </span>
               ))}
             </div>
           ) : null}
-          <p className="text-gray-500 text-sm">{project.date}</p>
+          <p style={{ color: 'var(--color-accent)', opacity: 0.6 }} className="text-sm">{project.date}</p>
         </div>
       </section>
 

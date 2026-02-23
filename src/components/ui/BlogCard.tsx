@@ -15,10 +15,10 @@ interface BlogCardProps {
 export function BlogCard({ title, date, excerpt, tags, href, category, semester }: BlogCardProps) {
   return (
     <Link to={href}>
-      <Card variant="gradient" className="group h-full hover:shadow-xl transition-all hover:border-blue-600/50">
+      <Card variant="gradient" className="group h-full hover:shadow-xl transition-all" style={{ borderColor: 'var(--color-border)' }}>
         <div className="flex justify-between items-start mb-3 gap-4">
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-100 group-hover:text-blue-300 transition-colors">
+            <h2 className="text-xl font-bold group-hover:text-gray-300 transition-colors" style={{ color: '#a0a0a0' }}>
               {title}
             </h2>
             <div className="flex gap-2 mt-2">
@@ -34,10 +34,10 @@ export function BlogCard({ title, date, excerpt, tags, href, category, semester 
             </div>
           </div>
 
-          <span className="text-sm text-slate-500 whitespace-nowrap">{date}</span>
+          <span className="text-sm whitespace-nowrap" style={{ color: '#a0a0a0', opacity: 0.5 }}>{date}</span>
         </div>
 
-        <p className="text-slate-400 mb-4 line-clamp-2">{excerpt}</p>
+        <p className="mb-4 line-clamp-2" style={{ color: 'rgba(232, 241, 245, 0.8)' }}>{excerpt}</p>
 
         <div className="flex flex-wrap gap-2">
           {tags?.map((tag) => (

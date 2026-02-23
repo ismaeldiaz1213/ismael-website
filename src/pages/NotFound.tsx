@@ -13,10 +13,10 @@ export function NotFound() {
           />
         </div>
 
-        <h1 className="text-6xl font-bold text-white mb-4">404</h1>
-        <h2 className="text-3xl font-semibold text-slate-200 mb-6">Page Not Found</h2>
+        <h1 className="text-6xl font-bold mb-4" style={{ color: 'var(--color-text)' }}>404</h1>
+        <h2 className="text-3xl font-semibold mb-6" style={{ color: 'var(--color-accent)' }}>Page Not Found</h2>
 
-        <p className="text-lg text-slate-300 mb-8 leading-relaxed">
+        <p className="text-lg mb-8 leading-relaxed" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>
           Idk what you did but you found a page that doesn't exist! Hopefully that wasn't my fault. If so, my bad for
           giving you the wrong page. Otherwise, get it together man! Look, I'll tell you what, this blorb right here can
           help you find your way back out. In fact... it found a button for you to click below which should take you back
@@ -25,7 +25,8 @@ export function NotFound() {
 
         <Link
           to="/"
-          className="inline-block px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-semibold rounded-lg transition-all"
+          className="inline-block px-8 py-3 font-semibold rounded-lg transition-all"
+          style={{ backgroundColor: 'var(--color-primary)', color: 'var(--color-text)' }}
         >
           Back Home
         </Link>

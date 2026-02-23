@@ -1,35 +1,72 @@
-import { HeroSection, Section, SectionHeader, FeatureCard, Button } from '../components/ui'
+import { Section, SectionHeader, FeatureCard, Button } from '../components/ui'
+import { PCBTraceAnimation } from '../components/PCBTraceAnimation'
 import natureImage from '../assets/nature-2025.jpeg'
 
 export function Home() {
   return (
-    <main>
-      {/* Hero Section */}
-      <HeroSection
-        title="Hello, I'm Ismael Diaz"
-        subtitle="ECE and CS student at Duke University"
-        description="Deep interests in embedded systems, computer architecture, and computer networks!"
-        image={
-          <img
-            src={natureImage}
-            alt="Hero background"
-            className="w-full h-96 object-cover rounded-lg shadow-xl border border-purple-500/30"
-          />
-        }
-        actions={[
-          {
-            label: 'View My Resume',
-            href: '/resume',
-            variant: 'primary',
-          },
-        ]}
-      />
+    <main style={{ backgroundColor: 'var(--color-bg-dark)' }}>
+      {/* PCB Trace Hero 
+          Added a mask-image to fade the bottom of the animation 
+      */}
+      <div 
+        className="relative" 
+        style={{ 
+          WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)' 
+        }}
+      >
+        <PCBTraceAnimation text="Hi, I'm Ismael Diaz" />
+      </div>
+
+      {/* About Section 
+          Negative margin pulls this section up slightly to overlap the fade 
+      */}
+      <section 
+        className="relative py-20 px-6 -mt-20 z-10" 
+        style={{ backgroundColor: 'rgba(16, 42, 59, 0.7)', backdropFilter: 'blur(8px)' }}
+      >
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left: Text Content */}
+            <div className="animate-slide-in-left">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>
+                About Me
+              </h2>
+              <div className="space-y-4 mb-8">
+                <p className="text-lg" style={{ color: 'var(--color-text)', opacity: 0.9 }}>
+                  ECE and CS student at Duke University
+                </p>
+                <p className="text-lg" style={{ color: 'var(--color-accent)', opacity: 0.95 }}>
+                  Deep interests in embedded systems, computer architecture, and computer networks!
+                </p>
+              </div>
+              <Button variant="primary" size="lg" href="/resume">
+                View My Resume
+              </Button>
+            </div>
+
+            {/* Right: Image - Increased height to h-80 / h-96 */}
+            <div className="animate-slide-in-right flex justify-center">
+              <img
+                src={natureImage}
+                alt="Ismael Diaz"
+                className="w-full max-w-sm h-80 md:h-96 object-cover rounded-2xl shadow-2xl"
+                style={{ 
+                  borderColor: 'var(--color-accent)', 
+                  borderWidth: '2px',
+                  boxShadow: 'var(--shadow-gray-lg)'
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Featured Section */}
       <Section variant="gradient">
         <SectionHeader
           title="Featured"
-          subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have made decent progress. Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken. It is mostly me just sharing my thoughts on what I learned, what I struggled with, and things future students should note when building their schedules with these courses in mind."
+          subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have made decent progress. Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken."
         />
 
         <div className="grid md:grid-cols-2 gap-8 mt-12">
@@ -38,7 +75,6 @@ export function Home() {
             description="A collection of projects I've built showcasing some of my technical skills"
             icon="📁"
             href="/projects"
-            accent="blue"
           />
 
           <FeatureCard
@@ -46,7 +82,6 @@ export function Home() {
             description="Reflections on my courses at Duke"
             icon="💭"
             href="/duke-courses"
-            accent="orange"
           />
         </div>
       </Section>
@@ -54,8 +89,8 @@ export function Home() {
       {/* CTA Section */}
       <Section variant="dark">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Let's Connect</h2>
-          <p className="text-lg text-gray-300 mb-8">
+          <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-text)' }}>Let's Connect</h2>
+          <p className="text-lg mb-8" style={{ color: 'var(--color-accent)', opacity: 0.8 }}>
             Questions about something? Feel free to reach out!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -77,5 +112,3 @@ export function Home() {
     </main>
   )
 }
-
-

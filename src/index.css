@@ -1,9 +1,18 @@
+/* Import font from fontsource */
+@import '@fontsource/ia-writer-mono';
+
+/* Import modular styles first - MUST come before @tailwind */
+@import './styles/colors.css';
+@import './styles/animations.css';
+@import './styles/components.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html {
   scroll-behavior: smooth;
+  font-family: 'iA Writer Mono', monospace;
 }
 
 

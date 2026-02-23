@@ -13,11 +13,11 @@ export function Card({
 }: CardProps) {
   const variantStyles = {
     default:
-      'bg-slate-800/50 border border-slate-700 rounded-lg p-6 shadow-lg hover:shadow-xl hover:border-slate-600 transition-all',
+      'bg-[#0f3a52]/50 border border-[#1a5f7a] rounded-lg p-6 shadow-lg hover:shadow-[0_0_20px_rgba(0,217,255,0.2)] hover:border-[#00d9ff] transition-all',
     gradient:
-      'bg-gradient-to-br from-purple-700/30 via-blue-800/30 to-slate-900/50 border border-purple-600/40 rounded-lg p-6 backdrop-blur-sm hover:border-purple-500/60 hover:from-purple-600/40 hover:to-slate-800/60 transition-all',
+      'bg-gradient-to-br from-[#0f3a52]/30 via-[#061e2a]/20 to-[#0a1929]/50 border border-[#1a5f7a]/40 rounded-lg p-6 backdrop-blur-sm hover:border-[#00d9ff]/60 hover:from-[#0f3a52]/40 hover:to-[#0a1929]/60 transition-all',
     glass:
-      'bg-slate-900/40 backdrop-blur-md border border-slate-700/50 rounded-lg p-6 hover:bg-slate-900/60 hover:border-purple-600/50 transition-all',
+      'bg-[#0f3a52]/40 backdrop-blur-md border border-[#1a5f7a]/50 rounded-lg p-6 hover:bg-[#0f3a52]/60 hover:border-[#00d9ff]/50 transition-all',
   }
 
   return (

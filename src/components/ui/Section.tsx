@@ -10,10 +10,10 @@ export function Section({
   className = '',
 }: SectionProps) {
   const variantStyles = {
-    light: 'bg-gradient-to-br from-purple-900/20 via-blue-900/20 to-slate-800/30 border border-purple-700/40',
-    dark: 'bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950',
+    light: 'bg-gradient-to-br from-[#0f3a52]/30 via-[#0a1929]/20 to-[#0a1929]/40 border border-[#00d9ff]/20',
+    dark: 'bg-gradient-to-br from-[#0a1929] via-[#0f3a52]/20 to-[#0a1929]',
     gradient:
-      'bg-gradient-to-r from-blue-950/80 via-purple-900/40 to-slate-950/60 border-y border-purple-800/30',
+      'bg-gradient-to-r from-[#0f3a52]/40 via-[#1a5f7a]/30 to-[#0a1929]/50 border-y border-[#00d9ff]/20',
   }
 
   return (

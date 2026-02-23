@@ -7,7 +7,6 @@ interface FeatureCardProps {
   icon?: React.ReactNode
   href?: string
   onClick?: () => void
-  accent?: 'blue' | 'orange'
 }
 
 export function FeatureCard({
@@ -16,23 +15,20 @@ export function FeatureCard({
   icon = '✨',
   href,
   onClick,
-  accent = 'blue',
 }: FeatureCardProps) {
-  const accentStyles = accent === 'blue' 
-    ? { text: 'text-blue-300', hover: 'group-hover:text-blue-200' }
-    : { text: 'text-amber-300', hover: 'group-hover:text-amber-200' }
+  const accentColor = '#a0a0a0'
 
   const Content = (
     <Card variant="gradient" className="group h-full hover:scale-105 transition-transform">
-      <div className="h-32 rounded-lg bg-gradient-to-br from-purple-700/30 via-blue-700/30 to-orange-700/20 mb-4 flex items-center justify-center text-5xl">
+      <div className="h-32 rounded-lg mb-4 flex items-center justify-center text-5xl" style={{ backgroundColor: 'rgba(160, 160, 160, 0.1)' }}>
         {icon}
       </div>
-      <h3 className={`text-xl font-bold mb-3 text-slate-100 ${accentStyles.hover} transition-colors`}>
+      <h3 className="text-xl font-bold mb-3 transition-colors" style={{ color: 'var(--color-text)' }}>
         {title}
       </h3>
-      <p className="text-slate-400">{description}</p>
+      <p style={{ color: 'var(--color-text-secondary)' }}>{description}</p>
       <div className="mt-4 inline-block">
-        <span className={`${accentStyles.text} font-semibold group-hover:translate-x-2 transition-transform inline-block`}>
+        <span className="font-semibold group-hover:translate-x-2 transition-transform inline-block" style={{ color: accentColor }}>
           Learn more →
         </span>
       </div>

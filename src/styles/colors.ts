@@ -1,86 +1,72 @@
-// Dark Sunset Color Scheme - Deep Blue through Purple & Pink to Warm Coral
 export const colors = {
-  // Primary Blue (Bright for gradients)
-  dukeBlue: {
-    50: '#dbeafe',
-    100: '#bfdbfe',
-    200: '#93c5fd',
-    300: '#60a5fa',
-    400: '#3b82f6',
-    500: '#2563eb',
-    600: '#1d4ed8',
-    700: '#1e40af',
-    800: '#1e3a8a',
-    900: '#172554',
+  // Primary Colors - Desaturated Deep Ocean
+  primary: {
+    main: '#0a1929',      // Deep navy base
+    light: '#112240',     // Slightly lighter navy for layering
+    lighter: '#1d2d50',   // Muted blue-gray
+    dark: '#020c1b',      // Almost black navy
   },
-  
-  // Purple (Sunset transition)
-  purple: {
-    50: '#faf5ff',
-    100: '#f3e8ff',
-    200: '#e9d5ff',
-    300: '#d8b4fe',
-    400: '#c084fc',
-    500: '#a855f7',
-    600: '#9333ea',
-    700: '#7e22ce',
-    800: '#6b21a8',
-    900: '#581c87',
+
+  // Accent Colors - Muted Technical Grays
+  accent: {
+    main: '#94a3b8',      // Cool slate gray
+    light: '#cbd5e1',     // Soft silver
+    dark: '#64748b',      // Muted steel
   },
-  
-  // Rose/Pink (Sunset glow)
-  rose: {
-    50: '#fff7ed',
-    100: '#fee2e2',
-    200: '#fecaca',
-    300: '#fca5a5',
-    400: '#f87171',
-    500: '#ef4444',
-    600: '#dc2626',
-    700: '#b91c1c',
-    800: '#991b1b',
-    900: '#7f1d1d',
+
+  // Text Colors - High Readability, Low Strain
+  text: {
+    main: '#e2e8f0',      // Soft off-white (easy on eyes)
+    light: '#94a3b8',     // Muted slate for secondary text
+    dark: '#1e293b',      // Dark slate for contrast on light buttons
   },
-  
-  // Sunset Orange (Warm, bright)
-  sunset: {
-    50: '#fff7ed',
-    100: '#ffedd5',
-    200: '#fed7aa',
-    300: '#fdba74',
-    400: '#fb923c',
-    500: '#f97316',
-    600: '#ea580c',
-    700: '#c2410c',
-    800: '#9a3412',
-    900: '#7c2d12',
+
+  // Background Colors - Deep & Dark
+  bg: {
+    dark: '#0a1929',
+    darker: '#020c1b',
+    card: 'rgba(17, 34, 64, 0.4)', // Muted navy transparency
+    overlay: 'rgba(2, 12, 27, 0.95)',
   },
-  
-  // Neutral grays for dark theme
-  gray: {
-    50: '#f9fafb',
-    100: '#f3f4f6',
-    200: '#e5e7eb',
-    300: '#d1d5db',
-    400: '#9ca3af',
-    500: '#6b7280',
-    600: '#4b5563',
-    700: '#374151',
-    800: '#1f2937',
-    900: '#111827',
+
+  // Semantic Colors - Desaturated
+  success: '#52b788',     // Muted "Circuit" Green
+  warning: '#b79d52',     // Muted Gold
+  error: '#b75252',       // Muted Brick Red
+  info: '#5296b7',        // Muted Steel Blue
+
+  // Ocean shades - Dark & Muted
+  ocean: {
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
   },
-  
-  // Dark theme specific
-  white: '#ffffff',
-  black: '#000000',
-  
-  // Midnight/Dark base (keep these very dark)
-  midnight: '#0a1628',
-  dark: '#0f1419',
-  darkAccent: '#1a2847',
-  
-  // Gradient accent (warm peachy sunset)
-  sunsetAccent: '#fb923c',
+
+  // Cyan shades - Shifted toward Teal/Slate
+  cyan: {
+    50: '#f0f9ff',
+    100: '#e0f2fe',
+    200: '#bae6fd',
+    300: '#7dd3fc',
+    400: '#38bdf8',
+    500: '#0ea5e9',
+    600: '#0284c7',
+    700: '#0369a1',
+    800: '#075985',
+    900: '#0c4a6e',
+  },
+
+  utility: {
+    white: '#ffffff',
+    black: '#000000',
+  }
 }
 
 export type ColorName = keyof typeof colors
