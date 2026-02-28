@@ -12,6 +12,7 @@ const ProjectDetail = React.lazy(() => import('./pages/ProjectDetail').then(m =>
 const DukeThoughts = React.lazy(() => import('./pages/DukeThoughts').then(m => ({ default: m.DukeThoughts })))
 const DukeThoughtDetail = React.lazy(() => import('./pages/DukeThoughtDetail').then(m => ({ default: m.DukeThoughtDetail })))
 const Resume = React.lazy(() => import('./pages/Resume').then(m => ({ default: m.Resume })))
+const Weather = React.lazy(() => import('./pages/Weather').then(m => ({ default: m.Weather })))
 
 // Loading component
 function PageLoader() {
@@ -28,6 +29,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Suspense fallback={<PageLoader />}><Home /></Suspense>} />
+          <Route path="/weather" element={<Suspense fallback={<PageLoader />}><Weather /></Suspense>} />
           <Route path="/projects" element={<Suspense fallback={<PageLoader />}><Projects /></Suspense>} />
           <Route path="/projects/:id" element={<Suspense fallback={<PageLoader />}><ProjectDetail /></Suspense>} />
           <Route path="/resume" element={<Suspense fallback={<PageLoader />}><Resume /></Suspense>} />

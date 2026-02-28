@@ -23,7 +23,8 @@ export function DukeThoughts() {
       <Section variant="gradient">
         <SectionHeader
           title="Duke Courses"
-          subtitle="Reflections on my courses and experiences at Duke University."
+          subtitle="Reflections on my courses and experiences at Duke University in ways that a course eval maybe can't
+          capture. Regardless, it's another way for me to talk about a class."
           centered={false}
         />
       </Section>

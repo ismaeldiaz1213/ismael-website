@@ -45,6 +45,7 @@ export function DukeThoughtDetail() {
       </main>
     )
   }
+  // TODO: Add AnchorNavigator to each page.
 
   return (
     <main className="min-h-[calc(100vh-80px)]">
