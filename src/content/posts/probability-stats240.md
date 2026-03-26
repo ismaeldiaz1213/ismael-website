@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Probability for Statistical Inference and Modeling (STAT 240L)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2025, STAT, Prof: Zito]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

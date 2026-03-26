@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Signals and Systems (ECE 280L)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Spring 2025, ECE, Prof: Collins]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

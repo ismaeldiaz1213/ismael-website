@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Digital Systems (ECE 350L)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Spring 2025, ECE, Prof: Board]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR
@@ -18,6 +19,10 @@ published: false
 
 
 ## Who Should Take It
+
+
+## TA Perspective
+
 
 
 ## Final Take

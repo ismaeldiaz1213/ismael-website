@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Multivariable Calculus (Math 219)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2024, Math, Prof: Clark Bray]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

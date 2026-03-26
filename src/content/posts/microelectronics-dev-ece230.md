@@ -1,7 +1,7 @@
 ---
-title: "Masterminds (Writing 101)"
+title: "Intro to Microelectronic Devices and Circuits (ECE 230)"
 date: "2026-02-14"
-tags: [Fall 2023,Writing, Prof: VanSant]
+tags: [Fall 2025,ECE, Prof: Coonley]
 published: false
 ---
 

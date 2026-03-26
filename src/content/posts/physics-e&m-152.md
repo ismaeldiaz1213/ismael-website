@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Introductory Electricity & Magnetism (PHYS 152L)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2024, PHYS, Prof: Roy]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Linear Algebra (Math 218D)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Spring 2024, Math, Prof: Fitzpatrick]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

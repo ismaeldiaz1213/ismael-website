@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Chemistry (CHEM 101DL)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Spring 2025, Math]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

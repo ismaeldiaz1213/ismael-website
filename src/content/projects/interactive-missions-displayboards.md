@@ -31,14 +31,14 @@ Brother Manny found used smart boards on Facebook Marketplace, which honestly fe
 
 Before mounting anything, we did a small foot-traffic study. We observed which hallway most people walked through on their way in and out of the auditorium. One corridor clearly had the highest traffic, and that became our display location.
 
-> 📸 **Image Placeholder — Mounted Smart Board in Hallway**  
-> *Apparently I have never taken a picture of this project. Shocking. Once I'm back in Houston, I'll be sure to update this*
+![Location Selection](/projects/interactive-missions-displayboards/foyer_hallway_w_displays.jpg)
+> Hallway near the foyer with rightmost display and leftmost diplay visible 
 
 ### Mini PCs & BIOS Configuration
 
-We ordered mini PCs (I forget the exact models), and when they arrived, I immediately went into the BIOS and configured them to automatically power on when they received electricity. That way, if power was ever cut, they would boot back up without anyone needing to press a button.
+We ordered mini PCs (they were BeeLink, AMD, 16GB), and when they arrived, I immediately went into the BIOS and configured them to automatically power on when they received electricity. That way, if power was ever cut, they would boot back up without anyone needing to press a button.
 
-But that wasn’t the end of it.
+But why stop there with the automation?
 
 ### Automating the Entire Boot Process
 
@@ -71,35 +71,30 @@ From there, they selected a specific missionary they were interested in learning
 
 Once selected, the embedded slides for that missionary would open. Some slides contained video previews, others had photos and prayer requests.
 
-> 📸 **Image Placeholder — Individual Missionary Slide**  
-> *(Example slide showing prayer requests + images)*
+> 📸 **Image Placeholder: Individual Missionary Slide**  
+> *I'll show some pictures of this later since the web version also doesn't let you view an individual missionary.*
 
 We even implemented an internal idle timer. If the screen was untouched for 30–45 seconds, the slideshow would automatically navigate back to the looping intro video. PowerPoint was doing things I don’t think it was ever meant to do.
 
-For a while, it worked beautifully. In fact, you can still view it here: https://iblibertad.sharepoint.com/:p:/s/IBLMediaContent/IQAJVo4GnintTqoWZaUemEN6Aa6WAEw24hUGaT1cxFw02gU?e=F3Ivcf
+For a while, it worked beautifully. In fact, you can still view it here: 
+https://iblibertad.sharepoint.com/:p:/s/IBLMediaContent/IQAJVo4GnintTqoWZaUemEN6Aa6WAEw24hUGaT1cxFw02gU?e=F3Ivcf
 
 
 ---
 
 ## The Problems That Slowly Grew
 
-But scale always shows up eventually.
+But scale always shows up eventually. The file grew to over 1 GB as we started adding more missionaries. Updating it over OneDrive became painful, especially when the network was under heavy load. Sync delays, long uploads, and occasional version conflicts became routine. PowerPoint itself started to slow down. Changing something as simple as a color scheme meant editing slides across the entire file (of which there were many).
 
-The file grew to over 1 GB. Updating it over OneDrive became painful, especially when the network was under heavy load. Sync delays, long uploads, and occasional version conflicts became routine. PowerPoint itself started to slow down. Changing something as simple as a color scheme meant editing slides across the entire file.
+Then came the Microsoft pains. If for any reason the machine got signed out of the Microsoft account, a massive login screen would appear mid-presentation. In a church hallway. On a giant smart board. Oof.
 
-Then came the Microsoft pains. If for any reason the machine got signed out of the Microsoft account, a massive login screen would appear mid-presentation. In a church hallway. On a giant smart board.
-
-Yikes.
-
-What initially felt maintainable had slowly become fragile. I had chosen a platform that wasn’t built to scale. And now scale was biting back.
+What initially felt maintainable had slowly shown some carcks. I had chosen a platform that I thought could scale, but perhaps not to the extent to which we built it. And now scale was biting back.
 
 ---
 
 ## Moving Away from PowerPoint
 
-This all lined up with finishing my second internship at Amazon. After spending months thinking about scalable systems, clean abstractions, and maintainable architectures, I came back looking at this project differently.
-
-I realized I had made the classic early-engineer mistake: I optimized for short-term convenience over long-term scalability.
+This system stayed there, running without any major hiccups but had not been updated in a while. This all lined up with finishing my second internship at Amazon. After spending months thinking about scalable systems, clean abstractions, and maintainable architectures, I came back looking at this project differently. I realized I had made the classic early-engineer mistake where I optimized for short-term convenience over long-term scalability.
 
 At Amazon, I learned to think in terms of:
 
@@ -111,7 +106,7 @@ At Amazon, I learned to think in terms of:
 
 PowerPoint violated most of those principles. It tightly coupled content, presentation, media, navigation logic, and deployment into a single 1 GB binary file.
 
-So naturally, I decided to rebuild it as a React application.
+Being the excited ex-intern, naturally, I decided to rebuild this system as a React application.
 
 ---
 
@@ -134,7 +129,7 @@ Instead of one massive presentation file, the new system would separate concerns
 
 Instead of editing slides, I would edit structured data. Instead of re-uploading 1 GB, I would deploy lightweight updates. Instead of relying on Microsoft login states, I would control the runtime environment entirely.
 
-The key here is **SCALE**.
+The key here is **SCALE**. And while I haven't fully finished the transition to React, the work is in progress (and almost ready) for the next big step. 
 
 ---
 
@@ -142,33 +137,25 @@ The key here is **SCALE**.
 
 One of the most underrated parts of this project was budgeting. I seriously had to consider reasonable pricing and did everything I could to stay within a ~$1000 budget. That meant used hardware, smart purchasing decisions, and making sure every component had a purpose.
 
-Engineering in the real world isn’t just about writing clean code. It’s about tradeoffs — performance vs cost, simplicity vs flexibility, speed vs longevity.
-
-This project forced me to think about all of it.
+Engineering in the real world isn’t just about writing clean code. It’s about tradeoffs with performance vs cost, simplicity vs flexibility, speed vs longevity. This project forced me to think about all of it.
 
 ---
 
 ## Lessons Learned
 
-Looking back, this project taught me more about engineering tradeoffs than I expected.
-
-The fastest solution is not always the most scalable one. “Non-technical maintainability” and “technical maintainability” are not the same thing. Binary files are not your friend. If something is 1 GB, it probably shouldn’t be responsible for your application logic.
-
-Most importantly, I learned to think ahead. Not just “Can I build this?” but “What happens when this grows?”
-
-Small church projects can surface real-world engineering constraints just as much as internships can. Sometimes more.
+Looking back, this project taught me (and still teaches me) more about engineering tradeoffs than I expected. The fastest solution is not always the most scalable one. “Non-technical maintainability” and “technical maintainability” are not the same thing. Binary files are not your friend. If something is 1 GB, it probably shouldn’t be responsible for your application logic. Most importantly, I learned to think ahead. Not just “Can I build this?” but “What happens when this grows?”. Small church projects can surface real-world engineering constraints just as much as internships can. Sometimes more.
 
 ---
 
 ## Current State
 
-The React version is still in active development. Internships and school definitely get in the way at times. But when I have time — or when I’m procrastinating something else — I give this project attention.
+The React version is still in active development. Internships and school definitely get in the way at times. But when I have time, or when I’m procrastinating something else, I give this project attention.
 
 If you want to follow along with the progress, you can check out the repository here:
 
 https://github.com/ismaeldiaz1213/missions-displays
 
-The repository will keep you up to date on what phase I’m in during the rework of this project. I’ll definitely be updating this post in the future as well — especially with details on new decisions I make, hopefully with better hindsight.
+The repository will keep you up to date on what phase I’m in during the rework of this project. I’ll definitely be updating this post in the future as well - especially with details on new decisions I make, hopefully with better hindsight. And also... I want this to be open source. This work is for God's ministry and I see no reason to make money off of this. I'd like other churches to use this in the future. Once I reach the point where others can make quick clones of this repository, I will call this project complete. So... stay tuned for the next 5 years (because it might just take that long to finish at this rate).
 
 ## Gratitude & Mentorship
 

@@ -87,6 +87,25 @@ function airDensity(temp: number, pressureHpa: number, isMetric: boolean): strin
     return ((pressureHpa * 100) / (287.05 * tempK)).toFixed(3)
 }
 
+interface WeatherTooltipProps {
+    active?: boolean
+    payload?: any[]
+    color: string
+    formatValue: (v: number) => string
+}
+
+function WeatherTooltip({ active, payload, color, formatValue }: WeatherTooltipProps) {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-white/10 p-3 rounded-lg border border-white/20 backdrop-blur-sm">
+                <p className="text-sm font-semibold">{payload[0].payload.time}</p>
+                <p style={{ color }} className="font-bold">{formatValue(payload[0].value)}</p>
+            </div>
+        )
+    }
+    return null
+}
+
 function formatHour(time: string) {
     const d = new Date(time)
     return d.toLocaleString('en-US', { hour: 'numeric', hour12: true })
@@ -125,29 +144,6 @@ export function Weather() {
 
     if (loading || !data) return <div className="p-20 text-center">Crunching numbers...</div>
 
-    const CustomTemperatureTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-white/10 p-3 rounded-lg border border-white/20 backdrop-blur-sm">
-                    <p className="text-sm font-semibold">{payload[0].payload.time}</p>
-                    <p style={{ color: '#ef4444' }} className="font-bold">{payload[0].value.toFixed(1)}°</p>
-                </div>
-            )
-        }
-        return null
-    }
-
-    const CustomPrecipTooltip = ({ active, payload }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-white/10 p-3 rounded-lg border border-white/20 backdrop-blur-sm">
-                    <p className="text-sm font-semibold">{payload[0].payload.time}</p>
-                    <p style={{ color: '#3b82f6' }} className="font-bold">{payload[0].value}% 💧</p>
-                </div>
-            )
-        }
-        return null
-    }
 
     const todayStr = new Date().toISOString().split('T')[0]
     const startIndex = data.daily.time.findIndex((d: string) => d >= todayStr)
@@ -252,7 +248,7 @@ export function Weather() {
                                     stroke="rgba(255,255,255,0.5)"
                                     style={{ fontSize: '12px' }}
                                 />
-                                <Tooltip content={<CustomTemperatureTooltip />} />
+                                <Tooltip content={<WeatherTooltip color="#ef4444" formatValue={v => `${v.toFixed(1)}°`} />} />
                                 <Line 
                                     type="monotone" 
                                     dataKey="temp" 
@@ -286,7 +282,7 @@ export function Weather() {
                                     stroke="rgba(255,255,255,0.5)"
                                     style={{ fontSize: '12px' }}
                                 />
-                                <Tooltip content={<CustomPrecipTooltip />} />
+                                <Tooltip content={<WeatherTooltip color="#3b82f6" formatValue={v => `${v}% 💧`} />} />
                                 <Bar 
                                     dataKey="precip" 
                                     fill="#3b82f6"

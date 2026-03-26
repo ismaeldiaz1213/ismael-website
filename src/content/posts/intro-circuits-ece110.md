@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Circuit (ECE 110L)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2024, ECE Requirements, Prof: Massoud]
 published: false
+excerpt: "A very standard introductory circuits class"
 ---
 
 ## TLDR
@@ -12,6 +13,7 @@ published: false
 
 
 ## What Makes It Hard
+Labs were actually my least favorite part of this experience
 
 
 ## What Makes It Special

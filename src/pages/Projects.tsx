@@ -1,5 +1,4 @@
-// import { ProjectCard, Section, SectionHeader, Button } from '../components/ui'
-import { Section, SectionHeader } from '../components/ui'
+import { Section, SectionHeader, CTABox } from '../components/ui'
 import ProjectList from '../components/ui/ProjectList'
 import { getProjects, type Project } from '../lib/projects'
 import { useEffect, useState } from 'react'
@@ -33,12 +32,10 @@ export function Projects() {
         <ProjectList projects={projects} />
 
         {/* Call to Action */}
-        <div className="mt-16 p-8 rounded-lg bg-gradient-to-r from-blue-900/20 to-orange-900/20 border border-purple-500/30 text-center">
-          <h3 className="text-2xl font-bold text-slate-100 mb-2">Want to see more?</h3>
-          <p className="text-slate-300">
-            I'm working on some exciting projects! Check back soon for updates.
-          </p>
-        </div>
+        <CTABox
+          title="Want to see more?"
+          description="I'm working on some exciting projects! Check back soon for updates."
+        />
       </Section>
     </main>
   )

@@ -1,4 +1,4 @@
-import { Section, SectionHeader, FeatureCard, Button } from '../components/ui'
+import { Section, SectionHeader, FeatureCard, Button, InfoCard } from '../components/ui'
 import { PCBTraceAnimation } from '../components/PCBTraceAnimation'
 import natureImage from '../assets/nature-2025.jpeg'
 
@@ -23,7 +23,7 @@ export function Home() {
       */}
         <section
             className="relative py-20 px-6 -mt-20 z-10"
-            style={{ backgroundColor: 'rgba(16, 42, 59, 0.7)', backdropFilter: 'blur(8px)' }}
+            style={{ backgroundColor: 'var(--color-section-glass-bg)', backdropFilter: 'blur(8px)' }}
         >
             <div className="container mx-auto">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -47,51 +47,18 @@ export function Home() {
                             </p>
 
                             <div className="mt-6 grid gap-4">
-                                <div
-                                    className="rounded-2xl p-4"
-                                    style={{
-                                        border: '1px solid rgba(255,255,255,0.12)',
-                                        backgroundColor: 'rgba(0,0,0,0.18)',
-                                    }}
-                                >
-                                    <div className="text-sm uppercase tracking-wide mb-1" style={{ color: 'var(--color-accent)', opacity: 0.85 }}>
-                                        Right now I’m focused on
-                                    </div>
-                                    <p className="text-base" style={{ color: 'var(--color-text)', opacity: 0.88 }}>
-                                        This website! A fun side project to work on during my free time. Still working my missions display project.
-                                        And doing some research projects!
-                                    </p>
-                                </div>
+                                <InfoCard label="Right now I’m focused on">
+                                    This website! A fun side project to work on during my free time. Still working my missions display project.
+                                    And doing some research projects!
+                                </InfoCard>
 
-                                <div
-                                    className="rounded-2xl p-4"
-                                    style={{
-                                        border: '1px solid rgba(255,255,255,0.12)',
-                                        backgroundColor: 'rgba(0,0,0,0.18)',
-                                    }}
-                                >
-                                    <div className="text-sm uppercase tracking-wide mb-1" style={{ color: 'var(--color-accent)', opacity: 0.85 }}>
-                                        I am currently working with
-                                    </div>
-                                    <p className="text-base" style={{ color: 'var(--color-text)', opacity: 0.88 }}>
-                                        FPGA's, linux Fedora, mmWaveRadar, SML/NJ to make a compiler.
-                                    </p>
-                                </div>
+                                <InfoCard label="I am currently working with">
+                                    FPGA’s, linux Fedora, mmWaveRadar, SML/NJ to make a compiler.
+                                </InfoCard>
 
-                                <div
-                                    className="rounded-2xl p-4"
-                                    style={{
-                                        border: '1px solid rgba(255,255,255,0.12)',
-                                        backgroundColor: 'rgba(0,0,0,0.18)',
-                                    }}
-                                >
-                                    <div className="text-sm uppercase tracking-wide mb-1" style={{ color: 'var(--color-accent)', opacity: 0.85 }}>
-                                        Outside of engineering
-                                    </div>
-                                    <p className="text-base" style={{ color: 'var(--color-text)', opacity: 0.88 }}>
-                                        I spend lots of time at church or at home with family. Love a good roadtrip too.
-                                    </p>
-                                </div>
+                                <InfoCard label="Outside of engineering">
+                                    I spend lots of time at church or at home with family. Love a good roadtrip too.
+                                </InfoCard>
                             </div>
                         </div>
 

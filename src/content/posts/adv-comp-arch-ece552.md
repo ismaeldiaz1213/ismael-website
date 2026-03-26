@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Advanced Computer Architecture I (ECE 552)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2025, ECE, Prof: Wills]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

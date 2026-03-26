@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Partial and Ordinary Differential Equations (Math 353)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2023, Math]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR

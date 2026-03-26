@@ -31,6 +31,17 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
   --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
   --shadow-gray: 0 0 20px rgba(148, 163, 184, 0.05);
+
+  /* Subtle card surfaces */
+  --color-card-border-subtle: rgba(255, 255, 255, 0.12);
+  --color-card-bg-subtle: rgba(0, 0, 0, 0.18);
+
+  /* Page-level section backgrounds */
+  --color-section-glass-bg: rgba(16, 42, 59, 0.7);
+  --color-detail-header-bg: rgba(23, 66, 91, 0.3);
+
+  /* Tag pill background */
+  --color-tag-bg: rgba(129, 195, 215, 0.1);
 }
 
 body {

@@ -1,8 +1,9 @@
 ---
-title: "Calculus II (Math 122L)"
+title: "Computer Network Architecture (ECE 356)"
 date: "2026-02-14"
-tags: [Fall 2023, Math, Prof: Schott]
+tags: [Fall 2023, Math, Prof: Golatova]
 published: false
+excerpt: "yapping here"
 ---
 
 ## TLDR
