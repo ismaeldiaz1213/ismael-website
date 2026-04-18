@@ -81,7 +81,7 @@ export function Home() {
                         <figure className="w-full max-w-sm">
                             <img
                                 src={natureImage}
-                                alt="Ismael Diaz"
+                                alt="Ismael Diaz - Duke University ECE CS Student"
                                 className="w-full h-80 md:h-full object-cover rounded-2xl shadow-2xl"
                                 style={{
                                     borderColor: 'var(--color-accent)',
