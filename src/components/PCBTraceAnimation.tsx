@@ -370,7 +370,7 @@ export function PCBTraceAnimation({ text }: PCBTraceProps) {
 
     // ── Agent update ──────────────────────────────────────────────────────
 
-    function updateAgents(now: number) {
+    function updateAgents() {
       const w = window.innerWidth, h = window.innerHeight
 
       for (const agent of agents) {
@@ -507,7 +507,7 @@ export function PCBTraceAnimation({ text }: PCBTraceProps) {
 
       tickNodes(now)         // expire old nodes, maybe spawn new
       fadeBuffer(now)        // fade buffer + redraw persistent elements
-      updateAgents(now)      // move agents, draw trace segments into buffer
+      updateAgents()      // move agents, draw trace segments into buffer
 
       // Composite buffer → main canvas
       canvasCtx.clearRect(0, 0, w, h)
