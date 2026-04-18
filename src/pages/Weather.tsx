@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { PageMeta } from '../components/PageMeta'
 
 type City = {
     name: string
@@ -164,6 +165,10 @@ export function Weather() {
 
     return (
         <main className="min-h-screen px-6 py-16">
+            <PageMeta
+                    title="Weather"
+                    description="Some cool weather because yes."
+                  />
             <div className="max-w-6xl mx-auto">
 
                 {/* Header */}

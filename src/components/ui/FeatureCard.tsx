@@ -4,6 +4,10 @@ import { Card } from './Card'
 interface FeatureCardProps {
   title: string
   description: string
+  /** URL or imported asset for a cover image. When provided, replaces the icon. */
+  image?: string
+  /** Alt text for the image */
+  imageAlt?: string
   icon?: React.ReactNode
   href?: string
   onClick?: () => void
@@ -12,6 +16,8 @@ interface FeatureCardProps {
 export function FeatureCard({
   title,
   description,
+  image,
+  imageAlt = '',
   icon = '✨',
   href,
   onClick,
@@ -20,9 +26,19 @@ export function FeatureCard({
 
   const Content = (
     <Card variant="gradient" className="group h-full hover:scale-105 transition-transform">
-      <div className="h-32 rounded-lg mb-4 flex items-center justify-center text-5xl" style={{ backgroundColor: 'rgba(160, 160, 160, 0.1)' }}>
-        {icon}
-      </div>
+      {image ? (
+        <div className="h-32 rounded-lg mb-4 overflow-hidden">
+          <img
+            src={image}
+            alt={imageAlt}
+            className="w-full h-full object-cover"
+          />
+        </div>
+      ) : (
+        <div className="h-32 rounded-lg mb-4 flex items-center justify-center text-5xl" style={{ backgroundColor: 'rgba(160, 160, 160, 0.1)' }}>
+          {icon}
+        </div>
+      )}
       <h3 className="text-xl font-bold mb-3 transition-colors" style={{ color: 'var(--color-text)' }}>
         {title}
       </h3>

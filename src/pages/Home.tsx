@@ -1,10 +1,17 @@
 import { Section, SectionHeader, FeatureCard, Button, InfoCard } from '../components/ui'
 import { PCBTraceAnimation } from '../components/PCBTraceAnimation'
+import { PageMeta } from '../components/PageMeta'
 import natureImage from '../assets/nature-2025.jpeg'
+import duke_smif from '../assets/duke_smif_image.jpeg'
 
 export function Home() {
   return (
     <main style={{ backgroundColor: 'var(--color-bg-dark)' }}>
+      <PageMeta
+        title="Ismael Diaz | ECE + CS Student at Duke University"
+        description="Personal website of Ismael Diaz, ECE and Computer Science student at Duke University. Projects in embedded systems, FPGA design, hardware acceleration, and low-level computing."
+        keywords="embedded systems, FPGA, hardware acceleration, low-level computing, Houston, Duke student"
+      />
       {/* PCB Trace Hero
           Added a mask-image to fade the bottom of the animation 
       */}
@@ -35,25 +42,24 @@ export function Home() {
 
                         <div className="space-y-4 mb-8">
                             <p className="text-lg" style={{ color: 'var(--color-text)', opacity: 0.92 }}>
-                                Born and raised (and still living) in Houston, TX. I’m an ECE + CS student at Duke University
+                                Born and raised (and still living) in Houston, TX. I'm an ECE + CS student at Duke University
                                 who enjoys any of the low-level details that make computers work.
                                 Whether it be the processor design to the systems that allow a computer
                                 to interact with the outside world, it's all fun to learn!
                             </p>
 
                             <p className="text-lg" style={{ color: 'var(--color-accent)', opacity: 0.95 }}>
-                                I’m especially into embedded systems, computer architecture, and computer networks. Or really,
-                                anything where performance, reliability, and “how it actually works” matter.
-                            </p>
+                                I'm becoming partciularly interested in embedded systems and learning how edge devices can be hardware accelerated along with running ML algorithms.
+                                </p>
 
                             <div className="mt-6 grid gap-4">
-                                <InfoCard label="Right now I’m focused on">
+                                <InfoCard label="Right now I'm focused on">
                                     This website! A fun side project to work on during my free time. Still working my missions display project.
-                                    And doing some research projects!
+                                    And doing some research projects which I will certainly share later!
                                 </InfoCard>
 
                                 <InfoCard label="I am currently working with">
-                                    FPGA’s, linux Fedora, mmWaveRadar, SML/NJ to make a compiler.
+                                    FPGA's, mmWaveRadar, SML/NJ to make a compiler
                                 </InfoCard>
 
                                 <InfoCard label="Outside of engineering">
@@ -116,14 +122,16 @@ export function Home() {
           <FeatureCard
             title="Check Out My Work"
             description="A collection of projects I've built showcasing some of my technical skills"
-            icon="📁"
+            image="/projects/interactive-missions-displayboards/display_completion.jpg"
+            imageAlt="Interactive missions display boards project"
             href="/projects"
           />
 
           <FeatureCard
             title="My Duke Course Experience"
             description="Reflections on my courses at Duke"
-            icon="💭"
+            image={duke_smif}
+            imageAlt="Duke University courses"
             href="/duke-courses"
           />
         </div>

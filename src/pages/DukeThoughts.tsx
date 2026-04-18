@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Section, SectionHeader } from '../components/ui'
 import PostList from '../components/ui/PostList'
 import { getPosts, type Post } from '../lib/posts'
+import { PageMeta } from '../components/PageMeta'
 
 export function DukeThoughts() {
   const [posts, setPosts] = useState<Post[]>([])
@@ -19,6 +20,11 @@ export function DukeThoughts() {
 
   return (
     <main>
+      <PageMeta
+        title="Duke Courses"
+        description="Ismael Diaz's reflections on courses taken at Duke University as an ECE + CS student — honest takes beyond what a course eval can capture."
+        keywords="Duke University courses, ECE courses, CS courses, Duke student blog"
+      />
       {/* Header */}
       <Section variant="gradient">
         <SectionHeader

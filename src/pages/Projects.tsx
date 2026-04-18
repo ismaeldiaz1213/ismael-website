@@ -2,6 +2,7 @@ import { Section, SectionHeader, CTABox } from '../components/ui'
 import ProjectList from '../components/ui/ProjectList'
 import { getProjects, type Project } from '../lib/projects'
 import { useEffect, useState } from 'react'
+import { PageMeta } from '../components/PageMeta'
 
 export function Projects() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -18,6 +19,10 @@ export function Projects() {
 
   return (
     <main>
+      <PageMeta
+        title="Projects"
+        description="Engineering projects by Ismael Diaz, ECE + CS student at Duke University — embedded systems, FPGA, hardware, and software."
+      />
       {/* Header */}
       <Section variant="light">
         <SectionHeader
@@ -34,7 +39,7 @@ export function Projects() {
         {/* Call to Action */}
         <CTABox
           title="Want to see more?"
-          description="I'm working on some exciting projects! Check back soon for updates."
+          description="I'm working on some exciting projects! Check back soon for updates. Projects that I've completed but probably haven't finished the write-up on include the: vending machine, floating-point approximate adder, planning center check-ins reports, and my egr 101 project."
         />
       </Section>
     </main>

@@ -7,6 +7,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import { getProject, type Project } from '../lib/projects'
 import { extractHeadings, markdownHeadingComponents } from '../lib/markdown'
 import { DetailPageLayout } from '../components/ui'
+import { PageMeta } from '../components/PageMeta'
 import type { Heading } from '../components/AnchorNavigator'
 
 export function ProjectDetail() {
@@ -52,23 +53,29 @@ export function ProjectDetail() {
   }
 
   return (
-    <DetailPageLayout
-      backHref="/projects"
-      backLabel="Back to Projects"
-      backNavLabel="← Back to All Projects"
-      backNavDescription="See other projects and work"
-      title={project.title}
-      date={project.date}
-      tags={project.tags}
-      headings={headings}
-    >
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, rehypeSanitize]}
-        components={markdownHeadingComponents}
+    <>
+      <PageMeta
+        title={`${project.title}`}
+        description={`${project.title} — an engineering project by Ismael Diaz, ECE + CS student at Duke University.`}
+      />
+      <DetailPageLayout
+        backHref="/projects"
+        backLabel="Back to Projects"
+        backNavLabel="← Back to All Projects"
+        backNavDescription="See other projects and work"
+        title={project.title}
+        date={project.date}
+        tags={project.tags}
+        headings={headings}
       >
-        {project.content}
-      </ReactMarkdown>
-    </DetailPageLayout>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          components={markdownHeadingComponents}
+        >
+          {project.content}
+        </ReactMarkdown>
+      </DetailPageLayout>
+    </>
   )
 }

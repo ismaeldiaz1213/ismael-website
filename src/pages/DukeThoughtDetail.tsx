@@ -7,6 +7,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import { getPost, type Post } from '../lib/posts'
 import { extractHeadings, markdownHeadingComponents } from '../lib/markdown'
 import { DetailPageLayout } from '../components/ui'
+import { PageMeta } from '../components/PageMeta'
 import type { Heading } from '../components/AnchorNavigator'
 
 export function DukeThoughtDetail() {
@@ -52,6 +53,11 @@ export function DukeThoughtDetail() {
   }
 
   return (
+    <>
+    <PageMeta
+      title={`${post.title}`}
+      description={`Ismael Diaz's thoughts on ${post.title} — a Duke University course reflection.`}
+    />
     <DetailPageLayout
       backHref="/duke-courses"
       backLabel="Back to Duke Courses"
@@ -70,5 +76,6 @@ export function DukeThoughtDetail() {
         {post.content}
       </ReactMarkdown>
     </DetailPageLayout>
+    </>
   )
 }
