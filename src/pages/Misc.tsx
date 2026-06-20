@@ -23,7 +23,7 @@ export function Misc() {
         </div>
         <div className="max-w-6xl mx-auto relative">
           <h1 className="c-text text-5xl md:text-6xl font-bold mb-4">Misc</h1>
-          <p className="c-text opacity-60 text-xl max-w-xl">The yap section. Truly unpredictable what ends up here.</p>
+          <p className="c-text opacity-60 text-xl max-w-xl">A very random section. Truly unpredictable what ends up here.</p>
         </div>
       </section>
 

@@ -16,7 +16,7 @@ export function Home() {
 
       {/* mask-image fades the bottom of the animation into the section below */}
       <div className="relative pcb-animation-mask">
-        <PCBTraceAnimation text="¡Hola!" subtitle="Duke ECE + CS | Computer Nerd" />
+        <PCBTraceAnimation text="¡Hola!" subtitle="Welcome home traveler" />
       </div>
 
       {/* -mt-20 overlaps the fade so there's no gap between animation and content */}
@@ -28,10 +28,11 @@ export function Home() {
 
               <div className="space-y-4 mb-8">
                 <p className="body-text text-lg">
-                  Born and raised (and still living) in Houston, TX. I'm an ECE + CS student at Duke University
-                  who enjoys any of the low-level details that make computers work.
+                  I was born and raised (and still living) in Houston, TX to two great Mexican parents. I have the privileage of double majoring in ECE + CS at Duke University.
+                  I enjoy learning and working on projects that have to do with low-level details that make computers work.
                   Whether it be the processor design to the systems that allow a computer
-                  to interact with the outside world, it's all fun to learn!
+                  to interact with the outside world, it's all fun to learn! But I also build websites and systems that can have a 
+                  significant impact in improving workflows and/or church memeber's experience.
                 </p>
 
                 <p className="body-text text-lg">
@@ -40,11 +41,10 @@ export function Home() {
 
                 <div className="mt-6 grid gap-4">
                   <InfoCard label="Right now I'm focused on">
-                    This website! A fun side project to work on during my free time. Still working my missions display project.
-                    And doing some research projects which I will certainly share later!
+                    Launching the missions display project, maintaining the planning center check-ins roster jobs, and continuing some research projects which I will certainly share later!
                   </InfoCard>
                   <InfoCard label="I am currently working with">
-                    FPGA's, mmWaveRadar, SML/NJ to make a compiler
+                    FPGA's, mmWaveRadar, and STM32 bare-metal programming.
                   </InfoCard>
                   <InfoCard label="Outside of engineering">
                     I spend lots of time at church or at home with family. Love a good roadtrip too.
@@ -86,13 +86,13 @@ export function Home() {
       <Section variant="gradient">
         <SectionHeader
           title="Featured"
-          subtitle="A couple of things worth checking out. Projects I've built, and course reflections from my time at Duke."
+          subtitle="A couple of things worth checking out. Projects I've built, random things I choose to talk about and course reflections from my time at Duke."
           centered={false}
         />
         <div className="grid md:grid-cols-2 gap-8 mt-12">
           <FeatureCard
             title="Check Out My Work"
-            description="A collection of projects I've built showcasing some of my technical skills"
+            description="A collection of projects I've built showcasing some of my wide array of technical software and hardware skills"
             image="/projects/interactive-missions-displayboards/display_completion.jpg"
             imageAlt="Interactive missions display boards project"
             href="/projects"

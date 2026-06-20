@@ -47,13 +47,16 @@ export function Writing() {
         description="Everything Ismael Diaz writes about — Duke courses, game reviews, recipes, experiences, and faith."
       />
 
-      <section className="hub-hero py-20 px-6 relative overflow-hidden">
-        <div className="hub-bg-word absolute right-0 top-1/2 -translate-y-1/2 text-[12rem] font-bold select-none pointer-events-none leading-none">
+      <section className="hub-hero py-24 px-6 relative overflow-hidden">
+        <div className="hub-bg-word absolute right-0 top-1/2 -translate-y-1/2 text-[14rem] font-bold select-none pointer-events-none leading-none">
           yap
         </div>
         <div className="max-w-6xl mx-auto relative">
-          <h1 className="c-text text-5xl md:text-6xl font-bold mb-4">Writing</h1>
-          <p className="c-text opacity-60 text-xl max-w-xl">A place for everything I want to say. Pick a topic below.</p>
+          <p className="c-accent text-sm font-mono uppercase tracking-widest mb-3 opacity-60">/ writing</p>
+          <h1 className="c-text text-5xl md:text-7xl font-bold mb-5 leading-tight">
+            Things I<br className="hidden sm:block" /> want to say.
+          </h1>
+          <p className="body-text text-lg max-w-md opacity-80">Pick a topic. I write about what I live, study, play, cook, and believe.</p>
         </div>
       </section>
 
@@ -61,12 +64,12 @@ export function Writing() {
         <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sections.map((section) => (
             <Link key={section.href} to={section.href} className={`block ${section.accentClass}`}>
-              <div className="hub-card h-full p-6 rounded-2xl">
-                <div className="hub-card-bar h-1 rounded-full mb-5" />
-                <div className="text-3xl mb-3">{section.icon}</div>
+              <div className="hub-card h-full p-5 rounded-2xl">
+                <div className="hub-card-bar" />
+                <div className="hub-card-icon">{section.icon}</div>
                 <h2 className="c-text text-xl font-bold mb-2">{section.title}</h2>
-                <p className="c-text opacity-60 text-sm leading-relaxed">{section.description}</p>
-                <div className="hub-card-cta mt-5 text-sm font-medium">Read →</div>
+                <p className="hub-card-desc text-sm leading-relaxed">{section.description}</p>
+                <div className="hub-card-cta mt-5 font-mono font-medium">Explore →</div>
               </div>
             </Link>
           ))}
