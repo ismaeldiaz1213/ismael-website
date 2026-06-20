@@ -1,3 +1,17 @@
+/* Body prose text — Inter for readability */
+.body-text {
+  font-family: 'Inter', sans-serif;
+  color: var(--color-body-text);
+  line-height: 1.75;
+}
+
+/* PCB hero subtitle */
+.pcb-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: rgba(148, 163, 184, 0.85);
+  letter-spacing: 0.02em;
+}
+
 /* Typography */
 .heading-1 {
   font-size: 3.5rem;
@@ -313,3 +327,28 @@
   -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
   mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
 }
+
+/* ─── Recent Takes section ─────────────────────────────────────────────────── */
+.recent-takes-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+.recent-take-card {
+  background: color-mix(in srgb, var(--section-accent) 5%, var(--color-bg-card));
+  border: 1px solid color-mix(in srgb, var(--section-accent) 15%, transparent);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.recent-take-card:hover {
+  border-color: color-mix(in srgb, var(--section-accent) 45%, transparent);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--section-accent) 12%, transparent);
+  transform: translateY(-2px);
+}
+.recent-take-bar {
+  background-color: var(--section-accent);
+  opacity: 0.7;
+}
+.recent-take-label { color: var(--section-accent); opacity: 0.85; }
+.recent-take-excerpt { color: var(--color-body-text); font-family: 'Inter', sans-serif; opacity: 0.8; }
+.recent-take-date   { color: var(--color-text-secondary); opacity: 0.6; }
+.recent-take-cta    { color: var(--section-accent); opacity: 0.8; }

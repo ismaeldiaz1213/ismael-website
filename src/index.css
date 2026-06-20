@@ -1,5 +1,9 @@
-/* Import font from fontsource */
+/* Import fonts from fontsource */
 @import '@fontsource/ia-writer-mono';
+@import '@fontsource/inter';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
 
 /* Import modular styles first - MUST come before @tailwind */
 @import './styles/colors.css';

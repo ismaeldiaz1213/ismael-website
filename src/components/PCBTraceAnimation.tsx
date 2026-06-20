@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 
 interface PCBTraceProps {
   text: string
+  subtitle?: string
 }
 
 const TO_RAD = Math.PI / 180
@@ -75,7 +76,7 @@ type Via = {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function PCBTraceAnimation({ text }: PCBTraceProps) {
+export function PCBTraceAnimation({ text, subtitle }: PCBTraceProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const canvasRef    = useRef<HTMLCanvasElement | null>(null)
 
@@ -561,6 +562,11 @@ export function PCBTraceAnimation({ text }: PCBTraceProps) {
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-mono font-bold text-slate-100 tracking-tighter opacity-90">
           {text}
         </h1>
+        {subtitle && (
+          <p className="pcb-subtitle mt-4 text-lg md:text-xl lg:text-2xl">
+            {subtitle}
+          </p>
+        )}
       </div>
     </div>
   )

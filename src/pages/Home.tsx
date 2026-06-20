@@ -1,5 +1,6 @@
 import { Section, SectionHeader, FeatureCard, Button, InfoCard } from '../components/ui'
 import { PCBTraceAnimation } from '../components/PCBTraceAnimation'
+import { RecentTakes } from '../components/RecentTakes'
 import { PageMeta } from '../components/PageMeta'
 import natureImage from '../assets/nature-2025.jpeg'
 import duke_smif from '../assets/duke_smif_image.jpeg'
@@ -15,7 +16,7 @@ export function Home() {
 
       {/* mask-image fades the bottom of the animation into the section below */}
       <div className="relative pcb-animation-mask">
-        <PCBTraceAnimation text="¡Hola! I'm Ismael Diaz" />
+        <PCBTraceAnimation text="¡Hola!" subtitle="Duke ECE + CS | Computer Nerd" />
       </div>
 
       {/* -mt-20 overlaps the fade so there's no gap between animation and content */}
@@ -26,15 +27,15 @@ export function Home() {
               <h2 className="c-text text-3xl md:text-4xl font-bold mb-6">About Me</h2>
 
               <div className="space-y-4 mb-8">
-                <p className="c-text opacity-92 text-lg">
+                <p className="body-text text-lg">
                   Born and raised (and still living) in Houston, TX. I'm an ECE + CS student at Duke University
                   who enjoys any of the low-level details that make computers work.
                   Whether it be the processor design to the systems that allow a computer
                   to interact with the outside world, it's all fun to learn!
                 </p>
 
-                <p className="c-accent opacity-95 text-lg">
-                  I'm becoming partciularly interested in embedded systems and learning how edge devices can be hardware accelerated along with running ML algorithms.
+                <p className="body-text text-lg">
+                  I'm becoming particularly interested in embedded systems and learning how edge devices can be hardware accelerated along with running ML algorithms.
                 </p>
 
                 <div className="mt-6 grid gap-4">
@@ -51,7 +52,7 @@ export function Home() {
                 </div>
               </div>
 
-              <p className="c-text opacity-92 mb-3 text-lg">On the off chance an employer stumbles across the site:</p>
+              <p className="body-text mb-3 text-lg">On the off chance an employer stumbles across the site:</p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Button variant="primary" size="lg" href="/resume">View My Resume</Button>
               </div>
@@ -85,7 +86,8 @@ export function Home() {
       <Section variant="gradient">
         <SectionHeader
           title="Featured"
-          subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have made decent progress. Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken."
+          subtitle="A couple of things worth checking out. Projects I've built, and course reflections from my time at Duke."
+          centered={false}
         />
         <div className="grid md:grid-cols-2 gap-8 mt-12">
           <FeatureCard
@@ -102,6 +104,12 @@ export function Home() {
             imageAlt="Duke University courses"
             href="/writing/duke-courses"
           />
+        </div>
+
+        <div className="mt-16">
+          <h3 className="c-text text-2xl font-bold mb-1">Hot Takes</h3>
+          <p className="body-text text-sm mb-2 opacity-70">My most recent posts from across the Writing sections.</p>
+          <RecentTakes />
         </div>
       </Section>
 
