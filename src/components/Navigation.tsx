@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import profileImage from '../assets/professssshhhh.jpeg'
+import profileImage from '../assets/Ismael_Diaz_Duke.jpeg'
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -24,6 +24,7 @@ export function Navigation() {
             <Link to="/" className="transition-colors text-sm font-medium" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>Home</Link>
             <Link to="/projects" className="transition-colors text-sm font-medium" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>Projects</Link>
             <Link to="/duke-courses" className="transition-colors text-sm font-medium" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>Duke Courses</Link>
+            <Link to="/misc" className="transition-colors text-sm font-medium" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>Misc</Link>
               <Link to="/weather" className="transition-colors text-sm font-medium" style={{ color: 'var(--color-accent)', opacity: 0.7 }}>Weather</Link>
 
 
@@ -47,9 +48,9 @@ export function Navigation() {
             className="md:hidden flex flex-col gap-1.5 p-2 rounded-lg transition-colors"
             style={{ backgroundColor: 'rgba(58, 124, 165, 0.2)' }}
           >
-            <div className={`w-6 h-0.5 transition-all`} style={{ backgroundColor: 'var(--color-accent)', transform: isOpen ? 'rotate(45deg) translateY(8px)' : 'none' }}></div>
+            <div className={`w-6 h-0.5 transition-all`} style={{ backgroundColor: 'var(--color-accent)', transform: isOpen ? 'rotate(45deg) translateY(5px) translateX(4px)' : 'none' }}></div>
             <div className={`w-6 h-0.5 transition-all`} style={{ backgroundColor: 'var(--color-accent)', opacity: isOpen ? 0 : 1 }}></div>
-            <div className={`w-6 h-0.5 transition-all`} style={{ backgroundColor: 'var(--color-accent)', transform: isOpen ? 'rotate(-45deg) translateY(-8px)' : 'none' }}></div>
+            <div className={`w-6 h-0.5 transition-all`} style={{ backgroundColor: 'var(--color-accent)', transform: isOpen ? 'rotate(-45deg) translateY(-6px) translateX(7px)' : 'none' }}></div>
           </button>
         </div>
 
@@ -64,6 +65,9 @@ export function Navigation() {
             </Link>
             <Link to="/duke-courses" className="block transition-colors text-sm font-medium py-2" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
               Duke Courses
+            </Link>
+            <Link to="/misc" className="block transition-colors text-sm font-medium py-2" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
+              Misc
             </Link>
               <Link to="/weather" className="block transition-colors text-sm font-medium py-2" style={{ color: 'var(--color-text)', opacity: 0.7 }}>
                   Weather

@@ -1,4 +1,4 @@
-import resumeUrl from '../assets/Ismael_s_Resume_SWE.pdf'
+import resumeUrl from '../assets/Ismael_s_Resume___SWE.pdf'
 
 export function Resume() {
   return (
