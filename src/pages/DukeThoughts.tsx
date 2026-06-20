@@ -1,54 +1,17 @@
-import { useEffect, useState } from 'react'
-import { Section, SectionHeader } from '../components/ui'
-import PostList from '../components/ui/PostList'
-import { getPosts, type Post } from '../lib/posts'
-import { PageMeta } from '../components/PageMeta'
+import { WritingListPage } from '../components/WritingListPage'
+import { getPosts } from '../lib/posts'
 
 export function DukeThoughts() {
-  const [posts, setPosts] = useState<Post[]>([])
-
-  useEffect(() => {
-    let mounted = true
-    getPosts().then((p) => {
-      if (mounted) setPosts(p)
-    })
-    return () => {
-      mounted = false
-    }
-  }, [])
-
-
   return (
-    <main>
-      <PageMeta
-        title="Duke Courses"
-        description="Ismael Diaz's reflections on courses taken at Duke University as an ECE + CS student — honest takes beyond what a course eval can capture."
-        keywords="Duke University courses, ECE courses, CS courses, Duke student blog"
-      />
-      {/* Header */}
-      <Section variant="gradient">
-        <SectionHeader
-          title="Duke Courses"
-          subtitle="Reflections on my courses and experiences at Duke University in ways that a course eval maybe can't
-          capture. Regardless, it's another way for me to talk about a class."
-          centered={false}
-        />
-      </Section>
-
-      {/* Posts */}
-      <Section>
-        {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <h3 className="text-2xl font-semibold" style={{ color: 'var(--color-text)' }}>Coming soon</h3>
-            <p style={{ color: 'var(--color-accent)', opacity: 0.7 }}>No posts yet! Slowly but surely these posts will start filtering in!</p>
-          </div>
-        ) : (
-          <div className="mt-8">
-            <PostList posts={posts} />
-          </div>
-        )}
-      </Section>
-    </main>
+    <WritingListPage
+      title="Duke Courses"
+      subtitle="Reflections on my courses at Duke in ways that a course eval can't capture. Another excuse to talk about class."
+      accentClass="section-duke"
+      icon="🎓"
+      fetchItems={getPosts}
+      basePath="/writing/duke-courses"
+      metaDescription="Ismael Diaz's honest reflections on Duke University ECE and CS courses."
+      emptyMessage="No course posts yet — working on it!"
+    />
   )
 }
-

@@ -6,118 +6,87 @@ import duke_smif from '../assets/duke_smif_image.jpeg'
 
 export function Home() {
   return (
-    <main style={{ backgroundColor: 'var(--color-bg-dark)' }}>
+    <main className="c-bg-dark">
       <PageMeta
         title="Ismael Diaz | ECE + CS Student at Duke University"
         description="Personal website of Ismael Diaz, ECE and Computer Science student at Duke University. Projects in embedded systems, FPGA design, hardware acceleration, and low-level computing."
         keywords="embedded systems, FPGA, hardware acceleration, low-level computing, Houston, Duke student"
       />
-      {/* PCB Trace Hero
-          Added a mask-image to fade the bottom of the animation 
-      */}
-      <div
-        className="relative"
-        style={{
-          WebkitMaskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)',
-          maskImage: 'linear-gradient(to bottom, black 85%, transparent 100%)'
-        }}
-      >
+
+      {/* mask-image fades the bottom of the animation into the section below */}
+      <div className="relative pcb-animation-mask">
         <PCBTraceAnimation text="¡Hola! I'm Ismael Diaz" />
       </div>
 
-      {/* About Section
-          Negative margin pulls this section up slightly to overlap the fade
-      */}
-        <section
-            className="relative py-20 px-6 -mt-20 z-10"
-            style={{ backgroundColor: 'var(--color-section-glass-bg)', backdropFilter: 'blur(8px)' }}
-        >
-            <div className="container mx-auto">
-                <div className="grid md:grid-cols-2 gap-12 items-center">
-                    {/* Left: Text Content */}
-                    <div className="animate-slide-in-left">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>
-                            About Me
-                        </h2>
+      {/* -mt-20 overlaps the fade so there's no gap between animation and content */}
+      <section className="c-section-glass relative py-20 px-6 -mt-20 z-10">
+        <div className="container mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="animate-slide-in-left">
+              <h2 className="c-text text-3xl md:text-4xl font-bold mb-6">About Me</h2>
 
-                        <div className="space-y-4 mb-8">
-                            <p className="text-lg" style={{ color: 'var(--color-text)', opacity: 0.92 }}>
-                                Born and raised (and still living) in Houston, TX. I'm an ECE + CS student at Duke University
-                                who enjoys any of the low-level details that make computers work.
-                                Whether it be the processor design to the systems that allow a computer
-                                to interact with the outside world, it's all fun to learn!
-                            </p>
+              <div className="space-y-4 mb-8">
+                <p className="c-text opacity-92 text-lg">
+                  Born and raised (and still living) in Houston, TX. I'm an ECE + CS student at Duke University
+                  who enjoys any of the low-level details that make computers work.
+                  Whether it be the processor design to the systems that allow a computer
+                  to interact with the outside world, it's all fun to learn!
+                </p>
 
-                            <p className="text-lg" style={{ color: 'var(--color-accent)', opacity: 0.95 }}>
-                                I'm becoming partciularly interested in embedded systems and learning how edge devices can be hardware accelerated along with running ML algorithms.
-                                </p>
+                <p className="c-accent opacity-95 text-lg">
+                  I'm becoming partciularly interested in embedded systems and learning how edge devices can be hardware accelerated along with running ML algorithms.
+                </p>
 
-                            <div className="mt-6 grid gap-4">
-                                <InfoCard label="Right now I'm focused on">
-                                    This website! A fun side project to work on during my free time. Still working my missions display project.
-                                    And doing some research projects which I will certainly share later!
-                                </InfoCard>
-
-                                <InfoCard label="I am currently working with">
-                                    FPGA's, mmWaveRadar, SML/NJ to make a compiler
-                                </InfoCard>
-
-                                <InfoCard label="Outside of engineering">
-                                    I spend lots of time at church or at home with family. Love a good roadtrip too.
-                                </InfoCard>
-                            </div>
-                        </div>
-
-                        <p className="mb-3 text-lg" style={{ color: 'var(--color-text)', opacity: 0.92 }}>On the off chance an employer stumbles across the site:</p>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <Button variant="primary" size="lg" href="/resume">
-                                View My Resume
-                            </Button>
-                        </div>
-                    </div>
-
-                    {/* Right: Image + caption */}
-                    <div className="animate-slide-in-right flex justify-center">
-                        <figure className="w-full max-w-sm">
-                            <img
-                                src={natureImage}
-                                alt="Ismael Diaz - Duke University ECE CS Student"
-                                className="w-full h-80 md:h-full object-cover rounded-2xl shadow-2xl"
-                                style={{
-                                    borderColor: 'var(--color-accent)',
-                                    borderWidth: '2px',
-                                    boxShadow: 'var(--shadow-gray-lg)',
-                                }}
-                            />
-                            <figcaption
-                                className="mt-3 text-sm leading-relaxed"
-                                style={{ color: 'var(--color-text)', opacity: 0.75 }}
-                            >
-                                This picture was taken in Utah during my road trip from Houston to Seattle —{' '}
-                                <a
-                                    href="https://www.google.com/maps/search/?api=1&query=Harley%27s%20Dome%20View%20Area%2C%20Thompson%20Springs%2C%20UT%2084540"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="underline"
-                                    style={{ color: 'var(--color-accent)' }}
-                                >
-                                    Harley&apos;s Dome View Area (Thompson Springs, UT 84540)
-                                </a>
-                                .
-                            </figcaption>
-                        </figure>
-                    </div>
+                <div className="mt-6 grid gap-4">
+                  <InfoCard label="Right now I'm focused on">
+                    This website! A fun side project to work on during my free time. Still working my missions display project.
+                    And doing some research projects which I will certainly share later!
+                  </InfoCard>
+                  <InfoCard label="I am currently working with">
+                    FPGA's, mmWaveRadar, SML/NJ to make a compiler
+                  </InfoCard>
+                  <InfoCard label="Outside of engineering">
+                    I spend lots of time at church or at home with family. Love a good roadtrip too.
+                  </InfoCard>
                 </div>
-            </div>
-        </section>
+              </div>
 
-      {/* Featured Section */}
+              <p className="c-text opacity-92 mb-3 text-lg">On the off chance an employer stumbles across the site:</p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button variant="primary" size="lg" href="/resume">View My Resume</Button>
+              </div>
+            </div>
+
+            <div className="animate-slide-in-right flex justify-center">
+              <figure className="w-full max-w-sm">
+                <img
+                  src={natureImage}
+                  alt="Ismael Diaz - Duke University ECE CS Student"
+                  className="c-border border-2 w-full h-80 md:h-full object-cover rounded-2xl shadow-2xl"
+                />
+                <figcaption className="c-text opacity-75 mt-3 text-sm leading-relaxed">
+                  This picture was taken in Utah during my road trip from Houston to Seattle —{' '}
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=Harley%27s%20Dome%20View%20Area%2C%20Thompson%20Springs%2C%20UT%2084540"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="c-accent underline"
+                  >
+                    Harley&apos;s Dome View Area (Thompson Springs, UT 84540)
+                  </a>
+                  .
+                </figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <Section variant="gradient">
         <SectionHeader
           title="Featured"
           subtitle="I have a couple of projects that you can check out below! Some are complete, others are still in progress and I will be updating it when I have made decent progress. Additionally, I have created blogs with my thoughts on some of the Duke courses I've taken."
         />
-
         <div className="grid md:grid-cols-2 gap-8 mt-12">
           <FeatureCard
             title="Check Out My Work"
@@ -126,46 +95,33 @@ export function Home() {
             imageAlt="Interactive missions display boards project"
             href="/projects"
           />
-
           <FeatureCard
             title="My Duke Course Experience"
             description="Reflections on my courses at Duke"
             image={duke_smif}
             imageAlt="Duke University courses"
-            href="/duke-courses"
+            href="/writing/duke-courses"
           />
         </div>
       </Section>
 
-      {/* CTA Section */}
       <Section variant="dark">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-text)' }}>Let's Connect</h2>
-          <p className="text-lg mb-8" style={{ color: 'var(--color-accent)', opacity: 0.8 }}>
-            Questions about something? Feel free to reach out!
-          </p>
+          <h2 className="c-text text-3xl font-bold mb-4">Let's Connect</h2>
+          <p className="c-accent opacity-80 text-lg mb-8">Questions about something? Feel free to reach out!</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="primary" size="lg" href="mailto:ismael.diaz@duke.edu">
-              Email Me
-            </Button>
-            <Button
-              variant="secondary"
-              size="lg"
-              href="https://www.linkedin.com/in/ismael-diaz-/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              LinkedIn
-            </Button>
+            <Button variant="primary" size="lg" href="mailto:ismael.diaz@duke.edu">Email Me</Button>
+            <Button variant="secondary" size="lg" href="https://www.linkedin.com/in/ismael-diaz-/" target="_blank" rel="noopener noreferrer">LinkedIn</Button>
           </div>
         </div>
       </Section>
-        {/* Tiny footer for the giggles */}
-        <div className="py-10 px-6 text-center">
-            <p className="text-sm" style={{ color: 'var(--color-text)', opacity: 0.55 }}>
-                Website built in React + Vite + TS. A bunch of tailwind. Run with Vercel. With a couple of AI friends helping along the way.
-            </p>
-        </div>
+
+      {/* Tiny footer for the giggles */}
+      <div className="py-10 px-6 text-center">
+        <p className="c-text opacity-55 text-sm">
+          Website built in React + Vite + TS. A bunch of tailwind. Run with Vercel. With a couple of AI friends helping along the way.
+        </p>
+      </div>
     </main>
   )
 }

@@ -3,25 +3,11 @@ interface InfoCardProps {
   children: React.ReactNode
 }
 
-/** Labeled info card used on the About/Home section. */
 export function InfoCard({ label, children }: InfoCardProps) {
   return (
-    <div
-      className="rounded-2xl p-4"
-      style={{
-        border: '1px solid var(--color-card-border-subtle)',
-        backgroundColor: 'var(--color-card-bg-subtle)',
-      }}
-    >
-      <div
-        className="text-sm uppercase tracking-wide mb-1"
-        style={{ color: 'var(--color-accent)', opacity: 0.85 }}
-      >
-        {label}
-      </div>
-      <p className="text-base" style={{ color: 'var(--color-text)', opacity: 0.88 }}>
-        {children}
-      </p>
+    <div className="info-card rounded-2xl p-4">
+      <div className="c-accent opacity-85 text-sm uppercase tracking-wide mb-1">{label}</div>
+      <p className="c-text opacity-88 text-base">{children}</p>
     </div>
   )
 }

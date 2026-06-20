@@ -42,6 +42,15 @@
 
   /* Tag pill background */
   --color-tag-bg: rgba(129, 195, 215, 0.1);
+
+  /* Hardcoded values surfaced as variables */
+  --color-muted-gray: #a0a0a0;
+  --color-muted-gray-faint: rgba(160, 160, 160, 0.5);
+  --color-body-text: rgba(232, 241, 245, 0.8);
+  --color-icon-placeholder: rgba(160, 160, 160, 0.1);
+  --color-nav-bg: rgba(10, 22, 40, 0.9);
+  --color-hamburger-btn: rgba(58, 124, 165, 0.2);
+  --color-section-title: #1a5f7a;
 }
 
 body {

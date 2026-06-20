@@ -36,7 +36,7 @@ export function ProjectDetail() {
   if (loading) {
     return (
       <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
-        <div className="text-center" style={{ color: 'var(--color-accent)' }}>Loading…</div>
+        <div className="c-accent text-center">Loading…</div>
       </main>
     )
   }
@@ -45,8 +45,8 @@ export function ProjectDetail() {
     return (
       <main className="min-h-[calc(100vh-80px)] flex items-center justify-center px-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-text)' }}>Project not found</h1>
-          <Link to="/projects" style={{ color: 'var(--color-accent)' }}>← Back to Projects</Link>
+          <h1 className="c-text text-3xl font-bold mb-4">Project not found</h1>
+          <Link to="/projects" className="c-accent">← Back to Projects</Link>
         </div>
       </main>
     )
@@ -55,7 +55,7 @@ export function ProjectDetail() {
   return (
     <>
       <PageMeta
-        title={`${project.title}`}
+        title={project.title}
         description={`${project.title} — an engineering project by Ismael Diaz, ECE + CS student at Duke University.`}
       />
       <DetailPageLayout

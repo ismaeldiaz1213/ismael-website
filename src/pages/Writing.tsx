@@ -1,0 +1,77 @@
+import { Link } from 'react-router-dom'
+import { PageMeta } from '../components/PageMeta'
+
+const sections = [
+  {
+    title: 'Duke Courses',
+    description: 'Honest takes on courses beyond what a course eval can capture.',
+    href: '/writing/duke-courses',
+    icon: '🎓',
+    accentClass: 'section-duke',
+  },
+  {
+    title: 'Game Reviews',
+    description: "Games I've played, from quick impressions to full breakdowns.",
+    href: '/writing/game-reviews',
+    icon: '🎮',
+    accentClass: 'section-games',
+  },
+  {
+    title: 'Recipes',
+    description: "Things I've cooked that actually turned out good.",
+    href: '/writing/recipes',
+    icon: '🍳',
+    accentClass: 'section-recipes',
+  },
+  {
+    title: 'Experiences',
+    description: "Road trips, moments, and things I've lived through worth writing down.",
+    href: '/writing/experiences',
+    icon: '🗺️',
+    accentClass: 'section-experiences',
+  },
+  {
+    title: 'Bible',
+    description: 'Thoughts and reflections on scripture and faith.',
+    href: '/writing/bible',
+    icon: '✝️',
+    accentClass: 'section-bible',
+  },
+]
+
+export function Writing() {
+  return (
+    <main className="c-bg-dark">
+      <PageMeta
+        title="Writing | Ismael Diaz"
+        description="Everything Ismael Diaz writes about — Duke courses, game reviews, recipes, experiences, and faith."
+      />
+
+      <section className="hub-hero py-20 px-6 relative overflow-hidden">
+        <div className="hub-bg-word absolute right-0 top-1/2 -translate-y-1/2 text-[12rem] font-bold select-none pointer-events-none leading-none">
+          yap
+        </div>
+        <div className="max-w-6xl mx-auto relative">
+          <h1 className="c-text text-5xl md:text-6xl font-bold mb-4">Writing</h1>
+          <p className="c-text opacity-60 text-xl max-w-xl">A place for everything I want to say. Pick a topic below.</p>
+        </div>
+      </section>
+
+      <section className="py-16 px-6">
+        <div className="max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sections.map((section) => (
+            <Link key={section.href} to={section.href} className={`block ${section.accentClass}`}>
+              <div className="hub-card h-full p-6 rounded-2xl">
+                <div className="hub-card-bar h-1 rounded-full mb-5" />
+                <div className="text-3xl mb-3">{section.icon}</div>
+                <h2 className="c-text text-xl font-bold mb-2">{section.title}</h2>
+                <p className="c-text opacity-60 text-sm leading-relaxed">{section.description}</p>
+                <div className="hub-card-cta mt-5 text-sm font-medium">Read →</div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </main>
+  )
+}

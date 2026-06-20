@@ -4,20 +4,12 @@ interface SectionHeaderProps {
   centered?: boolean
 }
 
-export function SectionHeader({
-  title,
-  subtitle,
-  centered = true,
-}: SectionHeaderProps) {
-  const textAlign = centered ? 'text-center' : 'text-left'
-
+export function SectionHeader({ title, subtitle, centered = true }: SectionHeaderProps) {
   return (
-    <div className={textAlign}>
-      <h2 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: '#1a5f7a' }}>
-        {title}
-      </h2>
+    <div className={centered ? 'text-center' : 'text-left'}>
+      <h2 className="c-section-title text-3xl md:text-4xl font-bold mb-3">{title}</h2>
       {subtitle && (
-        <p className="text-lg max-w-2xl mx-auto" style={{ color: '#a0a0a0', opacity: 0.8 }}>
+        <p className={`c-text-muted opacity-80 text-lg max-w-2xl ${centered ? 'mx-auto' : ''}`}>
           {subtitle}
         </p>
       )}

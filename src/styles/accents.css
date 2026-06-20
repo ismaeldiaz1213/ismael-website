@@ -1,0 +1,9 @@
+/* Per-section accent color — sets --section-accent on the container so all
+   child rules that reference var(--section-accent) get the right color
+   without any inline styles in TSX. */
+.section-duke         { --section-accent: #38bdf8; }
+.section-games        { --section-accent: #a78bfa; }
+.section-recipes      { --section-accent: #fb923c; }
+.section-experiences  { --section-accent: #4ade80; }
+.section-bible        { --section-accent: #fde047; }
+.section-weather      { --section-accent: #67e8f9; }
