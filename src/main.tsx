@@ -11,6 +11,7 @@ const ProjectDetail = React.lazy(() => import('./pages/ProjectDetail').then(m =>
 const Resume = React.lazy(() => import('./pages/Resume').then(m => ({ default: m.Resume })))
 const Weather = React.lazy(() => import('./pages/Weather').then(m => ({ default: m.Weather })))
 const Misc = React.lazy(() => import('./pages/Misc').then(m => ({ default: m.Misc })))
+const Games = React.lazy(() => import('./pages/Games').then(m => ({ default: m.Games })))
 
 // Writing hub + sub-sections
 const Writing = React.lazy(() => import('./pages/Writing').then(m => ({ default: m.Writing })))
@@ -48,6 +49,8 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/resume" element={<Lazy><Resume /></Lazy>} />
           <Route path="/misc" element={<Lazy><Misc /></Lazy>} />
           <Route path="/weather" element={<Lazy><Weather /></Lazy>} />
+          {/* Not linked from the nav. Shared by URL only. */}
+          <Route path="/games" element={<Lazy><Games /></Lazy>} />
 
           {/* Writing hub */}
           <Route path="/writing" element={<Lazy><Writing /></Lazy>} />
