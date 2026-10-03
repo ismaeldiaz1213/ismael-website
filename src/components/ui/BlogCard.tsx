@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Card } from './Card'
 import { Badge } from './Badge'
+import { ArrowIcon } from './Decor'
 
 interface BlogCardProps {
   title: string
@@ -14,31 +14,26 @@ interface BlogCardProps {
 
 export function BlogCard({ title, date, excerpt, tags, href, category, semester }: BlogCardProps) {
   return (
-    <Link to={href}>
-      <Card variant="gradient" className="c-border group h-full hover:shadow-xl transition-all">
-        <div className="flex justify-between items-start mb-3 gap-4">
-          <div className="flex-1">
-            <h2 className="c-text-muted text-xl font-bold group-hover:text-gray-300 transition-colors">
-              {title}
-            </h2>
-            <div className="flex gap-2 mt-2">
-              {category ? (
-                <Badge variant={category.toLowerCase() === 'hardware' ? 'orange' : category.toLowerCase() === 'software' ? 'primary' : 'secondary'}>
-                  {category}
-                </Badge>
-              ) : null}
-              {semester ? <Badge variant="secondary">{semester}</Badge> : null}
-            </div>
+    <Link to={href} className="group block h-full">
+      <article className="hub-card h-full p-6 md:p-7 flex flex-col">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="flex flex-wrap gap-2">
+            {category && <Badge variant={category.toLowerCase() === 'hardware' ? 'orange' : 'primary'}>{category}</Badge>}
+            {semester && <Badge variant="secondary">{semester}</Badge>}
           </div>
-          <span className="c-text-faint text-sm whitespace-nowrap">{date}</span>
+          {date && <span className="font-mono text-xs text-cream/50 whitespace-nowrap">{date}</span>}
         </div>
 
-        <p className="c-body mb-4 line-clamp-2">{excerpt}</p>
+        <h2 className="text-2xl font-bold text-cream leading-tight mb-2">{title}</h2>
+        <p className="body-text text-cream/70 line-clamp-2 mb-5">{excerpt}</p>
 
-        <div className="flex flex-wrap gap-2">
-          {tags?.map((tag) => <Badge key={tag} variant="secondary">{tag}</Badge>)}
+        <div className="mt-auto flex items-end justify-between gap-4">
+          <div className="flex flex-wrap gap-2">
+            {tags?.map((tag) => <Badge key={tag} variant="secondary">{tag}</Badge>)}
+          </div>
+          <span className="arrow-bubble"><ArrowIcon /></span>
         </div>
-      </Card>
+      </article>
     </Link>
   )
 }

@@ -1,47 +1,40 @@
 import { Link } from 'react-router-dom'
-import { Card } from './Card'
+import { ArrowIcon } from './Decor'
 
 interface FeatureCardProps {
   title: string
   description: string
-  image?: string
+  image: string
   imageAlt?: string
-  icon?: React.ReactNode
-  href?: string
-  onClick?: () => void
+  href: string
+  /** Small label pinned to the top-left of the image */
+  tag?: string
+  /** Sizing classes; defaults to a fixed aspect ratio */
+  className?: string
 }
 
-export function FeatureCard({
-  title,
-  description,
-  image,
-  imageAlt = '',
-  icon = '✨',
-  href,
-  onClick,
-}: FeatureCardProps) {
-  const Content = (
-    <Card variant="gradient" className="group h-full hover:scale-105 transition-transform">
-      {image ? (
-        <div className="h-32 rounded-lg mb-4 overflow-hidden">
-          <img src={image} alt={imageAlt} className="w-full h-full object-cover" />
-        </div>
-      ) : (
-        <div className="c-bg-icon h-32 rounded-lg mb-4 flex items-center justify-center text-5xl">
-          {icon}
-        </div>
-      )}
-      <h3 className="c-text text-xl font-bold mb-3 transition-colors">{title}</h3>
-      <p className="c-text-muted">{description}</p>
-      <div className="mt-4 inline-block">
-        <span className="c-text-muted font-semibold group-hover:translate-x-2 transition-transform inline-block">
-          Learn more →
+/** Big photo card with the title over a gradient and an arrow bubble. */
+export function FeatureCard({ title, description, image, imageAlt = '', href, tag, className = 'aspect-[4/3] md:aspect-[16/11]' }: FeatureCardProps) {
+  return (
+    <Link to={href} className={`group block relative overflow-hidden rounded-[2rem] border border-white/10 ${className}`}>
+      <img
+        src={image}
+        alt={imageAlt}
+        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-night via-night/40 to-transparent" />
+      {tag && (
+        <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-night/60 backdrop-blur text-cream text-xs font-medium">
+          {tag}
         </span>
+      )}
+      <div className="absolute inset-x-0 bottom-0 p-6 md:p-7 flex items-end justify-between gap-4">
+        <div>
+          <h3 className="text-2xl md:text-3xl font-bold text-cream mb-1.5">{title}</h3>
+          <p className="body-text text-cream/75 text-sm md:text-base leading-relaxed">{description}</p>
+        </div>
+        <span className="arrow-bubble w-12 h-12"><ArrowIcon className="w-5 h-5" /></span>
       </div>
-    </Card>
+    </Link>
   )
-
-  if (href) return <Link to={href}>{Content}</Link>
-  if (onClick) return <button onClick={onClick}>{Content}</button>
-  return Content
 }

@@ -1,29 +1,25 @@
 import { PageMeta } from '../components/PageMeta'
+import { HubHero } from '../components/ui'
 
 export function Games() {
   return (
-    <main className="c-bg-dark">
+    <main>
       <PageMeta
         title="Games | Ismael Diaz"
         description="Small games made by Ismael Diaz, playable in the browser."
       />
 
-      <section className="hub-hero py-20 px-6 relative overflow-hidden">
-        <div className="hub-bg-word absolute right-0 top-1/2 -translate-y-1/2 text-[12rem] font-bold select-none pointer-events-none leading-none">
-          games
-        </div>
-        <div className="max-w-6xl mx-auto relative">
-          <h1 className="c-text text-5xl md:text-6xl font-bold mb-4">Games</h1>
-          <p className="c-text opacity-60 text-xl max-w-xl">
-            Things I built in PICO-8. Playable right here, no download.
-          </p>
-        </div>
-      </section>
+      <HubHero
+        eyebrow="/ games"
+        title="Games"
+        accent="I made."
+        subtitle="Things I built in PICO-8. Playable right here, no download."
+        bgWord="play"
+      />
 
-      <section className="py-16 px-6">
+      <section className="py-12 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
-          <div className="hub-card p-6 sm:p-8 rounded-2xl">
-            <div className="hub-card-bar h-1 rounded-full mb-6" />
+          <div className="section-games hub-card p-6 sm:p-8">
 
             <h2 className="c-text text-2xl font-bold mb-2">Instructions Unclear</h2>
             <p className="c-text opacity-60 text-sm leading-relaxed mb-8 max-w-2xl">
@@ -38,7 +34,7 @@ export function Games() {
                 title="Instructions Unclear"
                 width={750}
                 height={680}
-                className="rounded-lg max-w-full"
+                className="rounded-3xl max-w-full"
                 style={{ border: 0 }}
                 scrolling="no"
                 allow="autoplay; fullscreen"

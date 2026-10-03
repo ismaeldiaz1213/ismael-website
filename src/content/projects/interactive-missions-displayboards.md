@@ -5,6 +5,7 @@ date: "2026-02-21"
 tags: [React, Church, In Progress]
 excerpt: "Creating a digital platform for church members to read, learn, and pray for missionaries that the church supports"
 category: "Software"
+cover: "/projects/interactive-missions-displayboards/display_completion.jpg"
 ---
 
 ## Beginnings

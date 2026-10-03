@@ -1,573 +1,744 @@
 import { useEffect, useRef } from 'react'
 
-interface PCBTraceProps {
-  text: string
-  subtitle?: string
-}
-
-const TO_RAD = Math.PI / 180
+/**
+ * A little PCB that routes itself.
+ *
+ * Each round: parts pop onto the board, a handful of "pipes" route neon traces
+ * pad-to-pad with 45° bends, pads and LEDs light up as traces land, the
+ * finished board holds for a moment, then everything fades and a brand new
+ * board is generated (as if you had refreshed the page).
+ */
 
 // ─── Tuning ──────────────────────────────────────────────────────────────────
 
-const AGENT_COUNT     = 16
-const ROUTING_SPEED   = 0.75
-const FREE_SPEED      = 0.45
-const ROUTE_TURN_P    = 0.025   // per-frame chance to recalculate direction toward target
-const FREE_TURN_P     = 0.06    // chaotic turn rate during free walk
-const FREE_MODE_P     = 0.004   // per-frame chance an agent enters free walk
-const ARRIVAL_R       = 24      // px radius to count as "arrived" at node
-const FREE_TTL_MIN    = 85
-const FREE_TTL_MAX    = 270
-const ROUTE_LIFE_MAX  = 2800    // safety-reset an agent stuck for this many frames
+const PIPE_COUNT     = 5       // traces being routed at the same time
+const HOPS_PER_PIPE  = 4       // connections each pipe lays per round
+const SPEED          = 180     // px per second
+const STUB           = 16      // straight run out of a pad before the first bend
+const PIPE_STAGGER   = 450     // ms between pipe starts
+const POP_IN_MS      = 550
+const HOLD_MS        = 7000    // finished board stays lit this long
+const ROUND_MAX_MS   = 32000   // safety cap on a single round
+const FADE_OUT_MS    = 800
+const VIA_CHANCE     = 0.3     // chance a bend gets a via
 
-const BASE_WIDTH      = 1.6
-const RANGE_WIDTH     = 1.4
-
-const MIN_NODES       = 18
-const MAX_NODES       = 36
-const NODE_LIFE_MIN   = 42000   // ms
-const NODE_LIFE_MAX   = 78000
-const NODE_SPAWN_GAP  = 145     // frames between node-spawn attempts when below MIN
-
-const VIA_R_MIN       = 2.2
-const VIA_R_MAX       = 4.4
-const VIA_LIFE_MIN    = 6000
-const VIA_LIFE_MAX    = 14000
-
-// Fade alpha: traces drawn into the buffer dim each frame by this factor.
-// At 0.08, a trace becomes ~1% brightness after ~55 frames (< 1 s at 60 fps).
-const FADE_ALPHA      = 0.08
-// 30-second clear: temporarily raise fade rate and STOP redrawing nodes/vias,
-// so everything genuinely clears (fixes the persistence bug).
-const CLEAR_CYCLE_MS  = 30000
-const CLEAR_FADE_MS   = 3200
-const CLEAR_ALPHA     = 0.25
-
-const ANGLES_DEG      = [0, 45, 90, 135, 180, 225, 270, 315]
-const COMP_KINDS      = ['resistor', 'capacitor', 'soic8', 'sot23', 'crystal', 'diode'] as const
-type  ComponentKind   = typeof COMP_KINDS[number]
+const NEON       = '#c8ff3d'
+const NEON_GLOW  = 'rgba(200, 255, 61, 0.9)'
+const COPPER     = '#d8a24a'
+const BODY       = '#0a1024'
+const BODY_EDGE  = 'rgba(124, 196, 255, 0.4)'
+const SILK       = 'rgba(255, 246, 233, 0.55)'
+const LED_COLORS = ['#ff4f9a', '#ffb020', '#2ee6d6']
+const CHIP_MARKS = ['BLUE-DVL', 'H-TOWN', 'SALSA-8']
+const MONO       = '"iA Writer Mono", ui-monospace, monospace'
+// Under-the-solder-mask details (dim, drawn once per round)
+const MASK_COPPER = 'rgba(140, 190, 255, 0.13)'
+const SILK_LINE   = 'rgba(255, 246, 233, 0.28)'
+const HOLE        = '#04102e'
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type PCBNode = {
-  id: number
-  x: number; y: number; angle: number
-  kind: ComponentKind
-  hue: number
-  createdAt: number; lifeMs: number
-  connections: number[]   // IDs of connected peer nodes
+type Kind = 'qfp' | 'soic' | 'sot23' | 'resistor' | 'capacitor' | 'crystal' | 'led'
+type Vec  = { x: number; y: number }
+type Rect = { x: number; y: number; hw: number; hh: number } // center + half extents
+
+type Pad = {
+  lx: number; ly: number; lw: number; lh: number // local center + size
+  x: number; y: number; nx: number; ny: number  // world center + outward normal
+  used: boolean; lit: boolean
 }
 
-type Agent = {
-  x: number; y: number; px: number; py: number
-  dir: number
-  mode: 'routing' | 'free'
-  targetId: number | null
-  sourceId: number | null
-  freeLife: number; freeTTL: number
-  routeLife: number
-  width: number; hue: number
+type Part = {
+  kind: Kind
+  x: number; y: number; rot: number; s: number
+  bw: number; bh: number   // local body size
+  hw: number; hh: number   // world half extents including pads
+  pads: Pad[]
+  ref: string; mark?: string; ledColor?: string
+  bornAt: number; litAt: number
 }
 
-type Via = {
-  x: number; y: number; r: number
-  createdAt: number; lifeMs: number; hue: number
+type Pipe = {
+  at: number                 // index of the part the pipe is sitting on
+  path: Vec[]; seg: number; segPos: number
+  head: Vec
+  dest: { part: number; pad: Pad } | null
+  hops: number; startAt: number; started: boolean; done: boolean
+}
+
+type Phase = 'build' | 'hold' | 'fade'
+
+// ─── Geometry helpers ────────────────────────────────────────────────────────
+
+const rand  = (a: number, b: number) => a + Math.random() * (b - a)
+const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v))
+const dist  = (a: Vec, b: Vec) => Math.hypot(a.x - b.x, a.y - b.y)
+const inRect = (p: Vec, r: Rect, pad = 0) =>
+  Math.abs(p.x - r.x) < r.hw + pad && Math.abs(p.y - r.y) < r.hh + pad
+const rectsOverlap = (a: Rect, b: Rect, gap: number) =>
+  Math.abs(a.x - b.x) < a.hw + b.hw + gap && Math.abs(a.y - b.y) < a.hh + b.hh + gap
+const easeOutBack = (t: number) => 1 + 2.2 * Math.pow(t - 1, 3) + 1.2 * Math.pow(t - 1, 2)
+
+function shuffle<T>(arr: T[]): T[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
+// ─── Part factory ────────────────────────────────────────────────────────────
+
+type LocalPad = { lx: number; ly: number; lw: number; lh: number; nx: number; ny: number }
+
+/** A row of n pads along one side of a body. */
+function padRow(n: number, pitch: number, side: 'top' | 'bottom' | 'left' | 'right',
+                bw: number, bh: number, long: number, short: number): LocalPad[] {
+  const out: LocalPad[] = []
+  for (let i = 0; i < n; i++) {
+    const t = (i - (n - 1) / 2) * pitch
+    if (side === 'top')    out.push({ lx: t, ly: -bh / 2 - long / 2 - 1, lw: short, lh: long, nx: 0, ny: -1 })
+    if (side === 'bottom') out.push({ lx: t, ly:  bh / 2 + long / 2 + 1, lw: short, lh: long, nx: 0, ny:  1 })
+    if (side === 'left')   out.push({ lx: -bw / 2 - long / 2 - 1, ly: t, lw: long, lh: short, nx: -1, ny: 0 })
+    if (side === 'right')  out.push({ lx:  bw / 2 + long / 2 + 1, ly: t, lw: long, lh: short, nx:  1, ny: 0 })
+  }
+  return out
+}
+
+/** Two pads at either end of a small two-terminal body. */
+const endPads = (bw: number, pw: number, ph: number): LocalPad[] => [
+  { lx: -bw / 2 - pw / 2 - 1, ly: 0, lw: pw, lh: ph, nx: -1, ny: 0 },
+  { lx:  bw / 2 + pw / 2 + 1, ly: 0, lw: pw, lh: ph, nx:  1, ny: 0 },
+]
+
+function footprint(kind: Kind): { bw: number; bh: number; pads: LocalPad[] } {
+  switch (kind) {
+    case 'qfp': {
+      const bw = 84, bh = 84
+      return { bw, bh, pads: (['top', 'bottom', 'left', 'right'] as const)
+        .flatMap(side => padRow(7, 10, side, bw, bh, 13, 5)) }
+    }
+    case 'soic': {
+      const bw = 72, bh = 34
+      return { bw, bh, pads: [...padRow(6, 11, 'top', bw, bh, 12, 6), ...padRow(6, 11, 'bottom', bw, bh, 12, 6)] }
+    }
+    case 'sot23': {
+      const bw = 24, bh = 16
+      return { bw, bh, pads: [
+        { lx: -8, ly:  bh / 2 + 5, lw: 7, lh: 8, nx: 0, ny:  1 },
+        { lx:  8, ly:  bh / 2 + 5, lw: 7, lh: 8, nx: 0, ny:  1 },
+        { lx:  0, ly: -bh / 2 - 5, lw: 7, lh: 8, nx: 0, ny: -1 },
+      ] }
+    }
+    case 'resistor':
+    case 'capacitor': return { bw: 30, bh: 14, pads: endPads(30, 12, 16) }
+    case 'crystal':   return { bw: 50, bh: 20, pads: endPads(50, 12, 14) }
+    case 'led':       return { bw: 26, bh: 14, pads: endPads(26, 10, 14) }
+  }
+}
+
+function makePart(kind: Kind, x: number, y: number, rot: number, s: number, ref: string): Part {
+  const fp = footprint(kind)
+  const c = Math.round(Math.cos(rot)), sn = Math.round(Math.sin(rot))
+  let ex = fp.bw / 2, ey = fp.bh / 2
+  const pads: Pad[] = fp.pads.map(p => {
+    const lx = p.lx * s, ly = p.ly * s, lw = p.lw * s, lh = p.lh * s
+    ex = Math.max(ex, (Math.abs(p.lx) + p.lw / 2))
+    ey = Math.max(ey, (Math.abs(p.ly) + p.lh / 2))
+    return {
+      lx, ly, lw, lh,
+      x: x + lx * c - ly * sn, y: y + lx * sn + ly * c,
+      nx: p.nx * c - p.ny * sn, ny: p.nx * sn + p.ny * c,
+      used: false, lit: false,
+    }
+  })
+  const swap = sn !== 0
+  return {
+    kind, x, y, rot, s,
+    bw: fp.bw * s, bh: fp.bh * s,
+    hw: (swap ? ey : ex) * s, hh: (swap ? ex : ey) * s,
+    pads, ref, bornAt: 0, litAt: 0,
+  }
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-export function PCBTraceAnimation({ text, subtitle }: PCBTraceProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const canvasRef    = useRef<HTMLCanvasElement | null>(null)
+export function PCBTraceAnimation({ className = '' }: { className?: string }) {
+  const wrapRef   = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    if (!containerRef.current) return
+    const wrap = wrapRef.current, canvas = canvasRef.current
+    if (!wrap || !canvas) return
 
-    if (!canvasRef.current) {
-      const c = document.createElement('canvas')
-      c.style.cssText = 'position:absolute;top:0;left:0'
-      canvasRef.current = c
-      containerRef.current.appendChild(c)
-    }
+    const ctx = canvas.getContext('2d')!
+    // Traces live on their own canvas so they persist for the whole round
+    const traceCanvas = document.createElement('canvas')
+    const tctx = traceCanvas.getContext('2d')!
+    // Static board art (copper under the mask, holes, silkscreen) for this round
+    const boardCanvas = document.createElement('canvas')
+    const bctx = boardCanvas.getContext('2d')!
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-    const canvasEl  = canvasRef.current
-    const canvasCtx = canvasEl.getContext('2d')!
-    const bufferEl  = document.createElement('canvas')
-    const bufferCtx = bufferEl.getContext('2d')!
-    const dpr       = Math.max(1, window.devicePixelRatio || 1)
+    let w = 0, h = 0, dpr = 1, scale = 1
+    let parts: Part[] = []
+    let pipes: Pipe[] = []
+    let linked = new Set<string>()
+    let keepOuts: Rect[] = []
+    let phase: Phase = 'build'
+    let phaseAt = 0, roundStart = 0
+    let raf = 0, last = 0
+    let visible = true
 
-    let nodes:      PCBNode[] = []
-    let agents:     Agent[]   = []
-    let vias:       Via[]     = []
-    let nodeIdSeq   = 0
-    let frameCount  = 0
-    let animId      = 0
+    const linkKey = (a: number, b: number) => (a < b ? `${a}-${b}` : `${b}-${a}`)
+    const partRect = (p: Part): Rect => ({ x: p.x, y: p.y, hw: p.hw, hh: p.hh })
 
-    let clearCycleStart = 0
-    let inClearFade     = false
-    let clearFadeStart  = 0
+    // ── Layout ──────────────────────────────────────────────────────────
 
-    // ── Helpers ───────────────────────────────────────────────────────────
+    function layoutBoard(now: number) {
+      scale = clamp(Math.min(w, h * 1.6) / 1000, 0.7, 1.35)
+      const mobile = w < 640
 
-    const rand    = (a: number, b: number) => a + Math.random() * (b - a)
-    const randInt = (a: number, b: number) => Math.floor(a + Math.random() * (b - a + 1))
-    const randHue = () => 200 + Math.random() * 25
-    const randKind = (): ComponentKind => COMP_KINDS[Math.floor(Math.random() * COMP_KINDS.length)]
-    const randDir  = () => ANGLES_DEG[Math.floor(Math.random() * ANGLES_DEG.length)] * TO_RAD
+      // Keep parts out from under the headline and the bottom CTA row
+      keepOuts = [
+        { x: w / 2, y: h * 0.45, hw: Math.min(w * 0.42, 440), hh: Math.min(h * 0.23, 180) },
+        { x: w / 2, y: h, hw: w / 2, hh: mobile ? 230 : 130 },
+        // Mounting holes + board labels in the top corners
+        { x: 0, y: 0, hw: mobile ? 70 : 250, hh: 60 },
+        { x: w, y: 0, hw: mobile ? 70 : 250, hh: 60 },
+      ]
 
-    /** Best allowed 45° direction from (x,y) toward (tx,ty) */
-    function dirToward(x: number, y: number, tx: number, ty: number): number {
-      const bear = Math.atan2(ty - y, tx - x)
-      let best = 0, bestD = Infinity
-      for (const deg of ANGLES_DEG) {
-        const r = deg * TO_RAD
-        let d = Math.abs(r - bear)
-        if (d > Math.PI) d = 2 * Math.PI - d
-        if (d < bestD) { bestD = d; best = r }
-      }
-      return best
-    }
+      const target = clamp(Math.round((w * h) / 75000), 5, 13)
+      const pool = shuffle<Kind>(['soic', 'crystal', 'led', 'led', 'resistor', 'capacitor',
+        'sot23', 'soic', 'led', 'resistor', 'capacitor', 'sot23'])
+      const kinds = (['qfp', ...pool] as Kind[]).slice(0, target)
+      const refCount: Record<string, number> = {}
+      const prefix: Record<Kind, string> = { qfp: 'U', soic: 'U', sot23: 'Q', resistor: 'R', capacitor: 'C', crystal: 'Y', led: 'D' }
+      const edge = 20, gap = 46 * scale
+      let markIdx = 0
 
-    function nodeById(id: number | null): PCBNode | undefined {
-      if (id === null) return undefined
-      return nodes.find(n => n.id === id)
-    }
+      parts = []
+      for (const kind of kinds) {
+        for (let attempt = 0; attempt < 120; attempt++) {
+          const rot = kind === 'qfp' || Math.random() < 0.5 ? 0 : Math.PI / 2
+          const probe = makePart(kind, 0, 0, rot, scale, '')
+          const x = rand(edge + probe.hw, w - edge - probe.hw)
+          const y = rand(edge + probe.hh + 14, h - edge - probe.hh)
+          const r: Rect = { x, y, hw: probe.hw, hh: probe.hh }
+          if (keepOuts.some(k => rectsOverlap(r, k, 6))) continue
+          if (parts.some(p => rectsOverlap(r, partRect(p), gap))) continue
 
-    /**
-     * Nearest node to (x,y), excluding excludeId.
-     * Prefers nodes not yet connected to fromId; falls back to any node.
-     */
-    function nearestNode(
-      x: number, y: number,
-      excludeId: number | null,
-      fromId: number | null
-    ): PCBNode | null {
-      let best: PCBNode | null = null, bestD = Infinity
-      // pass 1: prefer unconnected
-      for (const n of nodes) {
-        if (n.id === excludeId) continue
-        if (fromId !== null && n.connections.includes(fromId)) continue
-        const d = (n.x - x) ** 2 + (n.y - y) ** 2
-        if (d < bestD) { bestD = d; best = n }
-      }
-      if (best) return best
-      // pass 2: any other node
-      for (const n of nodes) {
-        if (n.id === excludeId) continue
-        const d = (n.x - x) ** 2 + (n.y - y) ** 2
-        if (d < bestD) { bestD = d; best = n }
-      }
-      return best
-    }
-
-    // ── Node lifecycle ────────────────────────────────────────────────────
-
-    function makeNode(x: number, y: number, now: number): PCBNode {
-      return {
-        id: nodeIdSeq++, x, y,
-        angle: randDir(), kind: randKind(), hue: randHue(),
-        createdAt: now, lifeMs: rand(NODE_LIFE_MIN, NODE_LIFE_MAX),
-        connections: [],
-      }
-    }
-
-    function initNodes(now: number) {
-      const w = window.innerWidth, h = window.innerHeight, m = 60
-      for (let i = 0; i < MIN_NODES; i++)
-        nodes.push(makeNode(rand(m, w - m), rand(m, h - m), now - rand(0, 8000)))
-    }
-
-    function tickNodes(now: number) {
-      nodes = nodes.filter(n => now - n.createdAt < n.lifeMs)
-      if (nodes.length < MAX_NODES && frameCount % NODE_SPAWN_GAP === 0) {
-        const w = window.innerWidth, h = window.innerHeight, m = 60
-        nodes.push(makeNode(rand(m, w - m), rand(m, h - m), now))
-      }
-    }
-
-    // ── Agent lifecycle ───────────────────────────────────────────────────
-
-    function makeAgent(): Agent {
-      const w = window.innerWidth, h = window.innerHeight
-      let x = rand(40, w - 40), y = rand(40, h - 40)
-      let sourceId: number | null = null
-      if (nodes.length > 0) {
-        const n = nodes[Math.floor(Math.random() * nodes.length)]
-        x = n.x; y = n.y; sourceId = n.id
-      }
-      const target = nearestNode(x, y, sourceId, sourceId)
-      return {
-        x, y, px: x, py: y,
-        dir: target ? dirToward(x, y, target.x, target.y) : randDir(),
-        mode: 'routing',
-        targetId: target?.id ?? null, sourceId,
-        freeLife: 0, freeTTL: 0, routeLife: 0,
-        width: rand(BASE_WIDTH, BASE_WIDTH + RANGE_WIDTH), hue: randHue(),
-      }
-    }
-
-    function initAgents() {
-      for (let i = 0; i < AGENT_COUNT; i++) agents.push(makeAgent())
-    }
-
-    // ── Via helpers ───────────────────────────────────────────────────────
-
-    function dropVia(x: number, y: number, hue: number) {
-      vias.push({
-        x, y, r: rand(VIA_R_MIN, VIA_R_MAX),
-        createdAt: performance.now(),
-        lifeMs: rand(VIA_LIFE_MIN, VIA_LIFE_MAX), hue,
-      })
-    }
-
-    // ── Resize ────────────────────────────────────────────────────────────
-
-    function resize() {
-      const { innerWidth: w, innerHeight: h } = window;
-      [canvasEl, bufferEl].forEach(el => { el.width = w * dpr; el.height = h * dpr })
-      canvasEl.style.width = `${w}px`; canvasEl.style.height = `${h}px`
-      canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      bufferCtx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      bufferCtx.lineCap = 'square'
-    }
-
-    // ── Drawing: trace segments ───────────────────────────────────────────
-
-    function drawSegment(px: number, py: number, x: number, y: number, w: number, hue: number) {
-      if (Math.abs(x - px) > 100 || Math.abs(y - py) > 100) return
-      bufferCtx.save()
-      bufferCtx.globalCompositeOperation = 'lighter'
-      bufferCtx.shadowBlur = 4
-      bufferCtx.shadowColor = `hsla(${hue},80%,50%,0.5)`
-      bufferCtx.strokeStyle = `hsla(${hue},80%,55%,0.28)`
-      bufferCtx.lineWidth = w
-      bufferCtx.beginPath()
-      bufferCtx.moveTo(px, py)
-      bufferCtx.lineTo(x, y)
-      bufferCtx.stroke()
-      bufferCtx.restore()
-    }
-
-    // ── Drawing: vias ─────────────────────────────────────────────────────
-
-    function drawVia(v: Via, now: number) {
-      const t = Math.max(0, Math.min(1, (now - v.createdAt) / v.lifeMs))
-      const a = (1 - t) * 0.3
-      bufferCtx.save()
-      bufferCtx.globalCompositeOperation = 'lighter'
-      bufferCtx.shadowBlur = 6
-      bufferCtx.shadowColor = `hsla(${v.hue},80%,55%,${a})`
-      bufferCtx.strokeStyle = `hsla(${v.hue},80%,55%,${a})`
-      bufferCtx.lineWidth = 1.6
-      bufferCtx.beginPath(); bufferCtx.arc(v.x, v.y, v.r, 0, Math.PI * 2); bufferCtx.stroke()
-      bufferCtx.shadowBlur = 0
-      bufferCtx.fillStyle = `rgba(0,0,0,${0.55 * (1 - t)})`
-      bufferCtx.beginPath(); bufferCtx.arc(v.x, v.y, Math.max(0.8, v.r * 0.45), 0, Math.PI * 2); bufferCtx.fill()
-      bufferCtx.restore()
-    }
-
-    // ── Drawing: footprints ───────────────────────────────────────────────
-
-    /** Sets up translate/rotate/composite and returns stroke color string */
-    function fpSetup(x: number, y: number, angle: number, a: number, hue: number): string {
-      bufferCtx.save()
-      bufferCtx.translate(x, y)
-      bufferCtx.rotate(angle)
-      bufferCtx.globalCompositeOperation = 'lighter'
-      const s = `hsla(${hue},70%,62%,${a})`
-      bufferCtx.strokeStyle = s
-      bufferCtx.fillStyle   = `hsla(${hue},70%,62%,${a * 0.12})`
-      bufferCtx.lineWidth   = 0.9
-      return s
-    }
-
-    function drawResistor(x: number, y: number, angle: number, a: number, hue: number) {
-      fpSetup(x, y, angle, a, hue)
-      const bw = 15, bh = 6, pw = 5, ph = 5
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.strokeRect(-bw/2 - pw, -ph/2, pw, ph)
-      bufferCtx.strokeRect(bw/2, -ph/2, pw, ph)
-      bufferCtx.restore()
-    }
-
-    function drawCapacitor(x: number, y: number, angle: number, a: number, hue: number) {
-      fpSetup(x, y, angle, a, hue)
-      const bw = 13, bh = 6, pw = 5, ph = 5
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.lineWidth = 0.7
-      bufferCtx.beginPath(); bufferCtx.moveTo(-bw/2 + 2.5, 0); bufferCtx.lineTo(-bw/2 + 5.5, 0); bufferCtx.stroke()
-      bufferCtx.beginPath(); bufferCtx.moveTo(-bw/2 + 4, -1.5); bufferCtx.lineTo(-bw/2 + 4, 1.5); bufferCtx.stroke()
-      bufferCtx.lineWidth = 0.9
-      bufferCtx.strokeRect(-bw/2 - pw, -ph/2, pw, ph)
-      bufferCtx.strokeRect(bw/2, -ph/2, pw, ph)
-      bufferCtx.restore()
-    }
-
-    function drawDiode(x: number, y: number, angle: number, a: number, hue: number) {
-      fpSetup(x, y, angle, a, hue)
-      const bw = 14, bh = 6, pw = 4, ph = 5
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.lineWidth = 1.2
-      bufferCtx.beginPath(); bufferCtx.moveTo(bw/2 - 3, -bh/2 + 0.5); bufferCtx.lineTo(bw/2 - 3, bh/2 - 0.5); bufferCtx.stroke()
-      bufferCtx.lineWidth = 0.9
-      bufferCtx.strokeRect(-bw/2 - pw, -ph/2, pw, ph)
-      bufferCtx.strokeRect(bw/2, -ph/2, pw, ph)
-      bufferCtx.restore()
-    }
-
-    function drawSOIC8(x: number, y: number, angle: number, a: number, hue: number) {
-      const stroke = fpSetup(x, y, angle, a, hue)
-      const bw = 22, bh = 14, pdW = 2.5, pdH = 5.5, sp = 4, n = 4, span = (n - 1) * sp
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.fillStyle = stroke
-      bufferCtx.beginPath(); bufferCtx.arc(-bw/2 + 2.5, -bh/2 + 2.5, 1.2, 0, Math.PI * 2); bufferCtx.fill()
-      for (let p = 0; p < n; p++) {
-        const px = -span / 2 + p * sp
-        bufferCtx.strokeRect(px - pdW / 2, bh / 2, pdW, pdH)
-        bufferCtx.strokeRect(span / 2 - p * sp - pdW / 2, -bh / 2 - pdH, pdW, pdH)
-      }
-      bufferCtx.restore()
-    }
-
-    function drawSOT23(x: number, y: number, angle: number, a: number, hue: number) {
-      fpSetup(x, y, angle, a, hue)
-      const bw = 7, bh = 7, pw = 3.5, ph = 2.2
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.strokeRect(-bw/2 - 0.5, bh/2, pw, ph)
-      bufferCtx.strokeRect(bw/2 - pw + 0.5, bh/2, pw, ph)
-      bufferCtx.strokeRect(-pw/2, -bh/2 - ph, pw, ph)
-      bufferCtx.restore()
-    }
-
-    function drawCrystal(x: number, y: number, angle: number, a: number, hue: number) {
-      fpSetup(x, y, angle, a, hue)
-      const bw = 20, bh = 8, pw = 4, ph = 7
-      bufferCtx.beginPath(); bufferCtx.rect(-bw/2, -bh/2, bw, bh); bufferCtx.fill(); bufferCtx.stroke()
-      bufferCtx.lineWidth = 0.7
-      bufferCtx.beginPath(); bufferCtx.moveTo(-bw/4, -bh/2); bufferCtx.lineTo(-bw/4, bh/2); bufferCtx.stroke()
-      bufferCtx.beginPath(); bufferCtx.moveTo(bw/4, -bh/2); bufferCtx.lineTo(bw/4, bh/2); bufferCtx.stroke()
-      bufferCtx.lineWidth = 0.9
-      bufferCtx.strokeRect(-bw/2 - pw, -ph/2, pw, ph)
-      bufferCtx.strokeRect(bw/2, -ph/2, pw, ph)
-      bufferCtx.restore()
-    }
-
-    function drawNode(node: PCBNode, now: number) {
-      const age    = now - node.createdAt
-      const t      = Math.max(0, Math.min(1, age / node.lifeMs))
-      const fadeIn = Math.min(1, age / 800)
-      const alpha  = fadeIn * (1 - t) * 0.24
-      if (alpha < 0.003) return
-      const { x, y, angle, kind, hue } = node
-      switch (kind) {
-        case 'resistor':  drawResistor(x, y, angle, alpha, hue);  break
-        case 'capacitor': drawCapacitor(x, y, angle, alpha, hue); break
-        case 'diode':     drawDiode(x, y, angle, alpha, hue);     break
-        case 'soic8':     drawSOIC8(x, y, angle, alpha, hue);     break
-        case 'sot23':     drawSOT23(x, y, angle, alpha, hue);     break
-        case 'crystal':   drawCrystal(x, y, angle, alpha, hue);  break
-      }
-    }
-
-    // ── Agent update ──────────────────────────────────────────────────────
-
-    function updateAgents() {
-      const w = window.innerWidth, h = window.innerHeight
-
-      for (const agent of agents) {
-        agent.px = agent.x
-        agent.py = agent.y
-
-        if (agent.mode === 'free') {
-          // ── free walk ──────────────────────────────────────────────
-          if (Math.random() < FREE_TURN_P) agent.dir = randDir()
-          agent.x += Math.cos(agent.dir) * FREE_SPEED
-          agent.y += Math.sin(agent.dir) * FREE_SPEED
-          if (Math.random() < 0.004) dropVia(agent.x, agent.y, agent.hue)
-          agent.freeLife++
-
-          if (agent.freeLife >= agent.freeTTL) {
-            // return to routing toward nearest node
-            agent.mode = 'routing'
-            const t = nearestNode(agent.x, agent.y, agent.sourceId, agent.sourceId)
-            agent.targetId = t?.id ?? null
-            if (t) agent.dir = dirToward(agent.x, agent.y, t.x, t.y)
-            agent.routeLife = 0
-          }
-        } else {
-          // ── routing ────────────────────────────────────────────────
-          let target = nodeById(agent.targetId)
-
-          // Target expired? Find a new one.
-          if (!target) {
-            const t = nearestNode(agent.x, agent.y, agent.sourceId, agent.sourceId)
-            agent.targetId = t?.id ?? null
-            agent.routeLife = 0
-            target = t ?? undefined
-            if (target) agent.dir = dirToward(agent.x, agent.y, target.x, target.y)
-          }
-
-          // Maybe enter free walk
-          if (Math.random() < FREE_MODE_P) {
-            agent.mode = 'free'
-            agent.freeLife = 0
-            agent.freeTTL = randInt(FREE_TTL_MIN, FREE_TTL_MAX)
-            agent.dir = randDir()
-          } else if (target) {
-            // Steer: recalculate on chance OR if heading >100° away from target
-            const bear = Math.atan2(target.y - agent.y, target.x - agent.x)
-            let angleDiff = Math.abs(agent.dir - bear)
-            if (angleDiff > Math.PI) angleDiff = 2 * Math.PI - angleDiff
-            if (angleDiff > Math.PI * 0.55 || Math.random() < ROUTE_TURN_P) {
-              agent.dir = dirToward(agent.x, agent.y, target.x, target.y)
-            }
-
-            // Arrival check
-            const dx = target.x - agent.x, dy = target.y - agent.y
-            if (dx * dx + dy * dy < ARRIVAL_R * ARRIVAL_R) {
-              dropVia(agent.x, agent.y, agent.hue)
-              // Record bidirectional connection
-              if (agent.sourceId !== null) {
-                if (!target.connections.includes(agent.sourceId)) target.connections.push(agent.sourceId)
-                const src = nodeById(agent.sourceId)
-                if (src && !src.connections.includes(target.id)) src.connections.push(target.id)
-              }
-              // Hop: source becomes old target, find next
-              agent.x = target.x; agent.y = target.y
-              agent.sourceId = target.id
-              const next = nearestNode(target.x, target.y, target.id, target.id)
-              agent.targetId = next?.id ?? null
-              agent.routeLife = 0
-              if (next) agent.dir = dirToward(target.x, target.y, next.x, next.y)
-            }
-          }
-
-          agent.x += Math.cos(agent.dir) * ROUTING_SPEED
-          agent.y += Math.sin(agent.dir) * ROUTING_SPEED
-          agent.routeLife++
-
-          // Safety: reset if stuck too long
-          if (agent.routeLife > ROUTE_LIFE_MAX) {
-            const fresh = makeAgent()
-            Object.assign(agent, fresh)
-          }
+          const p = prefix[kind]
+          refCount[p] = (refCount[p] ?? 0) + 1
+          const part = makePart(kind, x, y, rot, scale, `${p}${refCount[p]}`)
+          part.bornAt = now + parts.length * 70
+          if (kind === 'qfp') part.mark = 'DIAZ-01'
+          if (kind === 'soic') part.mark = CHIP_MARKS[markIdx++ % CHIP_MARKS.length]
+          if (kind === 'led') part.ledColor = LED_COLORS[Math.floor(Math.random() * LED_COLORS.length)]
+          parts.push(part)
+          break
         }
-
-        drawSegment(agent.px, agent.py, agent.x, agent.y, agent.width, agent.hue)
-
-        // Wrap edges
-        if (agent.x > w) agent.x = 0
-        if (agent.x < 0) agent.x = w
-        if (agent.y > h) agent.y = 0
-        if (agent.y < 0) agent.y = h
       }
     }
 
-    // ── Buffer fade + persistent element redraw ───────────────────────────
-    //
-    // The key fix for trace persistence: during the 30-second clear phase we
-    // use a stronger fade AND skip redrawing nodes/vias, so they cannot cancel
-    // out the fade in their areas. Everything truly clears to black.
+    // ── Routing ─────────────────────────────────────────────────────────
 
-    function fadeBuffer(now: number) {
-      // 30-second cycle management
-      if (!inClearFade && now - clearCycleStart > CLEAR_CYCLE_MS) {
-        inClearFade = true; clearFadeStart = now
+    function freePads(p: Part) { return p.pads.filter(pad => !pad.used) }
+
+    /** Free pad on `part` whose stub end lands closest to `toward`. */
+    function choosePad(part: Part, toward: Vec): Pad | null {
+      let best: Pad | null = null, bestScore = Infinity
+      for (const pad of freePads(part)) {
+        const stub = { x: pad.x + pad.nx * STUB * scale, y: pad.y + pad.ny * STUB * scale }
+        const score = dist(stub, toward) + Math.random() * 8
+        if (score < bestScore) { bestScore = score; best = pad }
       }
-      if (inClearFade && now - clearFadeStart > CLEAR_FADE_MS) {
-        inClearFade = false; clearCycleStart = now
+      return best
+    }
+
+    /** Bend point for a 0°/45° route from a to b. */
+    function bend(a: Vec, b: Vec, diagonalFirst: boolean): Vec {
+      const dx = b.x - a.x, dy = b.y - a.y
+      const ax = Math.abs(dx), ay = Math.abs(dy), sx = Math.sign(dx), sy = Math.sign(dy)
+      if (diagonalFirst) {
+        const d = Math.min(ax, ay)
+        return { x: a.x + sx * d, y: a.y + sy * d }
       }
+      return ax > ay ? { x: a.x + sx * (ax - ay), y: a.y } : { x: a.x, y: a.y + sy * (ay - ax) }
+    }
 
-      // Apply fade rect to buffer
-      bufferCtx.globalCompositeOperation = 'source-over'
-      bufferCtx.fillStyle = `rgba(0,0,0,${inClearFade ? CLEAR_ALPHA : FADE_ALPHA})`
-      bufferCtx.fillRect(0, 0, window.innerWidth, window.innerHeight)
+    /** How much a polyline runs over other parts (and, less so, the headline). */
+    function routeCost(path: Vec[], skip: Set<number>): number {
+      let cost = 0
+      for (let i = 0; i < path.length - 1; i++) {
+        const n = Math.max(1, Math.ceil(dist(path[i], path[i + 1]) / 8))
+        for (let k = 0; k <= n; k++) {
+          const t = k / n
+          const pt = { x: path[i].x + (path[i + 1].x - path[i].x) * t, y: path[i].y + (path[i + 1].y - path[i].y) * t }
+          parts.forEach((p, idx) => { if (!skip.has(idx) && inRect(pt, partRect(p), 6)) cost += 1 })
+          if (inRect(pt, keepOuts[0])) cost += 0.25
+        }
+      }
+      return cost
+    }
 
-      // During clear phase: just prune expired elements, do NOT redraw them —
-      // this is what allows the buffer to actually reach black.
-      if (inClearFade) {
-        vias  = vias.filter(v => now - v.createdAt < v.lifeMs)
+    function route(src: Pad, dst: Pad, skip: Set<number>): Vec[] {
+      const stub = STUB * scale
+      const p0 = { x: src.x, y: src.y }
+      const p1 = { x: src.x + src.nx * stub, y: src.y + src.ny * stub }
+      const p3 = { x: dst.x + dst.nx * stub, y: dst.y + dst.ny * stub }
+      const p4 = { x: dst.x, y: dst.y }
+      const options = [true, false].map(diag => [p0, p1, bend(p1, p3, diag), p3, p4])
+      const costs = options.map(o => routeCost(o, skip) + Math.random() * 0.5)
+      const chosen = costs[0] <= costs[1] ? options[0] : options[1]
+      return chosen.filter((pt, i) => i === 0 || dist(pt, chosen[i - 1]) > 0.5)
+    }
+
+    /** Pick the next part for a pipe to connect to and lay out the trace. */
+    function plan(pipe: Pipe) {
+      const from = parts[pipe.at]
+      if (!from || freePads(from).length === 0) { pipe.done = true; return }
+
+      let bestIdx = -1, bestScore = Infinity
+      parts.forEach((p, i) => {
+        if (i === pipe.at || freePads(p).length === 0 || linked.has(linkKey(pipe.at, i))) return
+        const score = dist(from, p) * rand(0.8, 1.4)
+        if (score < bestScore) { bestScore = score; bestIdx = i }
+      })
+      if (bestIdx < 0) { pipe.done = true; return }
+
+      const to = parts[bestIdx]
+      const sp = choosePad(from, to)!
+      sp.used = true
+      const dp = choosePad(to, sp)
+      if (!dp) { pipe.done = true; return }
+      dp.used = true
+      sp.lit = true
+      linked.add(linkKey(pipe.at, bestIdx))
+
+      pipe.path = route(sp, dp, new Set([pipe.at, bestIdx]))
+      pipe.seg = 0
+      pipe.segPos = 0
+      pipe.head = { ...pipe.path[0] }
+      pipe.dest = { part: bestIdx, pad: dp }
+    }
+
+    function arrive(pipe: Pipe, now: number) {
+      if (!pipe.dest) { pipe.done = true; return }
+      pipe.dest.pad.lit = true
+      parts[pipe.dest.part].litAt = now
+      pipe.at = pipe.dest.part
+      pipe.dest = null
+      pipe.hops++
+      if (pipe.hops >= HOPS_PER_PIPE) pipe.done = true
+      else plan(pipe)
+    }
+
+    // ── Drawing: board art (static per round) ──────────────────────────
+
+    /** A group of parallel copper traces running edge to edge under the mask. */
+    function drawBus() {
+      const horizontal = Math.random() < 0.6
+      const lanes = 2 + Math.floor(Math.random() * 3)
+      const pitch = 9 * scale
+      for (let attempt = 0; attempt < 14; attempt++) {
+        let path: Vec[]
+        if (horizontal) {
+          const y0 = rand(h * 0.1, h * 0.9), y1 = clamp(y0 + rand(-h * 0.3, h * 0.3), 30, h - 30)
+          const d = Math.abs(y1 - y0)
+          const ax = rand(w * 0.15, Math.max(w * 0.15, w * 0.85 - d))
+          path = [{ x: -10, y: y0 }, { x: ax, y: y0 }, { x: ax + d, y: y1 }, { x: w + 10, y: y1 }]
+        } else {
+          const x0 = rand(w * 0.08, w * 0.92), x1 = clamp(x0 + rand(-w * 0.2, w * 0.2), 30, w - 30)
+          const d = Math.abs(x1 - x0)
+          const ay = rand(h * 0.15, Math.max(h * 0.15, h * 0.85 - d))
+          path = [{ x: x0, y: -10 }, { x: x0, y: ay }, { x: x1, y: ay + d }, { x: x1, y: h + 10 }]
+        }
+        const lanesPaths = Array.from({ length: lanes }, (_, k) =>
+          path.map(pt => horizontal ? { x: pt.x, y: pt.y + k * pitch } : { x: pt.x + k * pitch, y: pt.y }))
+        if (lanesPaths.some(lp => routeCost(lp, new Set()) > 0)) continue
+
+        bctx.save()
+        bctx.strokeStyle = MASK_COPPER
+        bctx.lineWidth = 2.4 * scale
+        bctx.lineJoin = 'round'
+        for (const lp of lanesPaths) {
+          bctx.beginPath()
+          lp.forEach((pt, i) => (i ? bctx.lineTo(pt.x, pt.y) : bctx.moveTo(pt.x, pt.y)))
+          bctx.stroke()
+        }
+        bctx.restore()
         return
       }
-
-      // Normal frame: redraw vias and node footprints so they persist
-      vias = vias.filter(v => {
-        if (now - v.createdAt >= v.lifeMs) return false
-        drawVia(v, now)
-        return true
-      })
-      for (const node of nodes) drawNode(node, now)
     }
 
-    // ── Main render loop ──────────────────────────────────────────────────
+    function drawRing(x: number, y: number, r: number, hole: number, color: string) {
+      bctx.fillStyle = color
+      bctx.beginPath(); bctx.arc(x, y, r, 0, Math.PI * 2); bctx.fill()
+      bctx.fillStyle = HOLE
+      bctx.beginPath(); bctx.arc(x, y, hole, 0, Math.PI * 2); bctx.fill()
+    }
 
-    function frame() {
-      const w = window.innerWidth, h = window.innerHeight
-      const now = performance.now()
-      frameCount++
+    function drawBoardArt() {
+      bctx.setTransform(1, 0, 0, 1, 0, 0)
+      bctx.clearRect(0, 0, boardCanvas.width, boardCanvas.height)
+      bctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
-      tickNodes(now)         // expire old nodes, maybe spawn new
-      fadeBuffer(now)        // fade buffer + redraw persistent elements
-      updateAgents()      // move agents, draw trace segments into buffer
+      // Copper buses under the mask
+      const buses = clamp(Math.round((w * h) / 220000), 2, 6)
+      for (let i = 0; i < buses; i++) drawBus()
 
-      // Composite buffer → main canvas
-      canvasCtx.clearRect(0, 0, w, h)
-      canvasCtx.globalCompositeOperation = 'lighter'
-      canvasCtx.drawImage(bufferEl, 0, 0, w, h)
-      canvasCtx.globalCompositeOperation = 'source-atop'
-      canvasCtx.fillStyle = 'rgba(16,185,129,0.35)'
-      canvasCtx.fillRect(0, 0, w, h)
-      canvasCtx.globalCompositeOperation = 'source-over'
-
-      // Draw agent heads on top of the canvas
-      for (const agent of agents) {
-        canvasCtx.fillStyle = 'rgba(74,222,128,0.9)'
-        canvasCtx.beginPath()
-        canvasCtx.arc(agent.x, agent.y, 1.2, 0, Math.PI * 2)
-        canvasCtx.fill()
+      // Stitching via clusters in empty spots
+      for (let c = 0, tries = 0; c < 4 && tries < 60; tries++) {
+        const cx = rand(40, w - 40), cy = rand(40, h - 40)
+        const cluster: Rect = { x: cx, y: cy, hw: 24, hh: 14 }
+        if (parts.some(p => rectsOverlap(cluster, partRect(p), 10)) || keepOuts.some(k => rectsOverlap(cluster, k, 0))) continue
+        for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++)
+          drawRing(cx - 21 + i * 14, cy - 7 + j * 14, 3.4, 1.6, 'rgba(216, 162, 74, 0.35)')
+        c++
       }
 
-      animId = requestAnimationFrame(frame)
+      // Mounting holes + silkscreen in the top corners
+      const inset = 30
+      for (const x of [inset, w - inset]) {
+        drawRing(x, inset, 12, 7, 'rgba(216, 162, 74, 0.75)')
+        bctx.strokeStyle = SILK_LINE
+        bctx.lineWidth = 1
+        bctx.beginPath(); bctx.arc(x, inset, 17, 0, Math.PI * 2); bctx.stroke()
+      }
+      if (w >= 640) {
+        bctx.fillStyle = SILK
+        bctx.font = `600 11px ${MONO}`
+        bctx.textBaseline = 'middle'
+        bctx.textAlign = 'left'
+        bctx.fillText('DIAZZISM-MAIN  REV 2.0', inset + 28, inset - 6)
+        bctx.font = `10px ${MONO}`
+        bctx.fillStyle = 'rgba(255, 246, 233, 0.35)'
+        bctx.fillText('4-LAYER · 1.6MM · ENIG', inset + 28, inset + 9)
+        bctx.textAlign = 'right'
+        bctx.fillStyle = SILK
+        bctx.font = `600 11px ${MONO}`
+        bctx.fillText('FAB: DUKE  ·  ASSY: HOUSTON, TX', w - inset - 28, inset - 6)
+        // Fiducial
+        const fx = w - inset - 40, fy = inset + 12
+        bctx.fillStyle = 'rgba(216, 162, 74, 0.8)'
+        bctx.beginPath(); bctx.arc(fx, fy, 3, 0, Math.PI * 2); bctx.fill()
+        bctx.strokeStyle = 'rgba(255, 246, 233, 0.2)'
+        bctx.beginPath(); bctx.arc(fx, fy, 7, 0, Math.PI * 2); bctx.stroke()
+      }
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────
+    // ── Drawing: traces (persistent) ────────────────────────────────────
 
-    resize()
-    const now0 = performance.now()
-    clearCycleStart = now0
-    initNodes(now0)
-    initAgents()
-    frame()
+    function strokeTrace(a: Vec, b: Vec) {
+      tctx.save()
+      tctx.strokeStyle = NEON
+      tctx.lineWidth = Math.max(2, 3.2 * scale)
+      tctx.lineCap = 'round'
+      tctx.shadowColor = NEON_GLOW
+      tctx.shadowBlur = 10
+      tctx.beginPath()
+      tctx.moveTo(a.x, a.y)
+      tctx.lineTo(b.x, b.y)
+      tctx.stroke()
+      tctx.restore()
+    }
 
-    const onResize = () => {
+    function drawVia(p: Vec) {
+      const r = 5.5 * scale
+      tctx.save()
+      tctx.fillStyle = NEON
+      tctx.shadowColor = NEON_GLOW
+      tctx.shadowBlur = 12
+      tctx.beginPath(); tctx.arc(p.x, p.y, r, 0, Math.PI * 2); tctx.fill()
+      tctx.shadowBlur = 0
+      tctx.fillStyle = '#050a1c'
+      tctx.beginPath(); tctx.arc(p.x, p.y, r * 0.45, 0, Math.PI * 2); tctx.fill()
+      tctx.restore()
+    }
+
+    function step(pipe: Pipe, dt: number, now: number) {
+      let budget = SPEED * dt
+      while (budget > 0 && !pipe.done) {
+        const a = pipe.path[pipe.seg], b = pipe.path[pipe.seg + 1]
+        if (!b) { arrive(pipe, now); continue }
+        const len = dist(a, b)
+        const move = Math.min(len - pipe.segPos, budget)
+        const prev = pipe.head
+        pipe.segPos += move
+        budget -= move
+        const t = len === 0 ? 1 : pipe.segPos / len
+        pipe.head = { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }
+        strokeTrace(prev, pipe.head)
+        if (pipe.segPos >= len - 1e-6) {
+          pipe.seg++
+          pipe.segPos = 0
+          // Interior bends only (not the pad stubs)
+          if (pipe.seg >= 2 && pipe.seg <= pipe.path.length - 3 && Math.random() < VIA_CHANCE) drawVia(b)
+        }
+      }
+    }
+
+    // ── Drawing: parts (redrawn every frame on top of the traces) ───────
+
+    function drawPart(p: Part, now: number) {
+      const t = clamp((now - p.bornAt) / POP_IN_MS, 0, 1)
+      if (t <= 0) return
+      const pop = easeOutBack(t)
+      const { s, bw, bh } = p
+
+      ctx.save()
+      ctx.globalAlpha *= t
+      ctx.translate(p.x, p.y)
+      ctx.rotate(p.rot)
+      ctx.scale(pop, pop)
+
+      // Pads
+      for (const pad of p.pads) {
+        ctx.shadowBlur = pad.lit ? 10 : 0
+        ctx.shadowColor = NEON_GLOW
+        ctx.fillStyle = pad.lit ? NEON : COPPER
+        ctx.fillRect(pad.lx - pad.lw / 2, pad.ly - pad.lh / 2, pad.lw, pad.lh)
+      }
+      ctx.shadowBlur = 0
+
+      // Body
+      const r = Math.min(bw, bh) * 0.12
+      ctx.lineWidth = 1
+      ctx.strokeStyle = BODY_EDGE
+      ctx.fillStyle = BODY
+      if (p.kind === 'capacitor') ctx.fillStyle = '#b8875a'
+      if (p.kind === 'resistor')  ctx.fillStyle = '#111522'
+      if (p.kind === 'crystal')   ctx.fillStyle = '#c5ccd8'
+      if (p.kind === 'led')       ctx.fillStyle = '#e8ecf4'
+      ctx.beginPath()
+      ctx.roundRect(-bw / 2, -bh / 2, bw, bh, p.kind === 'crystal' ? bh / 2 : r)
+      ctx.fill()
+      if (p.kind !== 'crystal' && p.kind !== 'led' && p.kind !== 'capacitor') ctx.stroke()
+
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      if (p.kind === 'qfp' || p.kind === 'soic' || p.kind === 'sot23') {
+        // Pin-1 dot
+        ctx.fillStyle = 'rgba(255,255,255,0.35)'
+        ctx.beginPath()
+        ctx.arc(-bw / 2 + 7 * s, -bh / 2 + 7 * s, 2.4 * s, 0, Math.PI * 2)
+        ctx.fill()
+      }
+      if (p.mark) {
+        ctx.fillStyle = 'rgba(255,246,233,0.75)'
+        ctx.font = `600 ${(p.kind === 'qfp' ? 11 : 9) * s}px ${MONO}`
+        ctx.fillText(p.mark, 0, p.kind === 'qfp' ? -6 * s : 0)
+        if (p.kind === 'qfp') {
+          ctx.fillStyle = 'rgba(255,246,233,0.4)'
+          ctx.font = `${7.5 * s}px ${MONO}`
+          ctx.fillText('HECHO EN TX', 0, 9 * s)
+        }
+      }
+      if (p.kind === 'resistor') {
+        ctx.fillStyle = 'rgba(255,255,255,0.7)'
+        ctx.font = `${8 * s}px ${MONO}`
+        ctx.fillText('103', 0, 0)
+      }
+      if (p.kind === 'crystal') {
+        ctx.strokeStyle = 'rgba(10,16,36,0.35)'
+        ctx.beginPath()
+        ctx.roundRect(-bw / 2 + 4 * s, -bh / 2 + 4 * s, bw - 8 * s, bh - 8 * s, (bh - 8 * s) / 2)
+        ctx.stroke()
+      }
+      if (p.kind === 'led') {
+        const lit = p.litAt > 0
+        ctx.fillStyle = lit ? p.ledColor! : 'rgba(10,16,36,0.25)'
+        ctx.shadowColor = p.ledColor!
+        ctx.shadowBlur = lit ? 18 : 0
+        ctx.beginPath()
+        ctx.arc(0, 0, 4.5 * s, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.shadowBlur = 0
+      }
+      ctx.restore()
+
+      // LED bloom
+      if (p.kind === 'led' && p.litAt > 0) {
+        const k = clamp((now - p.litAt) / 300, 0, 1)
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 46 * s)
+        g.addColorStop(0, `${p.ledColor}66`)
+        g.addColorStop(1, `${p.ledColor}00`)
+        ctx.save()
+        ctx.globalAlpha *= k * t
+        ctx.globalCompositeOperation = 'lighter'
+        ctx.fillStyle = g
+        ctx.fillRect(p.x - 46 * s, p.y - 46 * s, 92 * s, 92 * s)
+        ctx.restore()
+      }
+
+      // Silkscreen corner brackets around the footprint
+      {
+        const m = 5 * s, L = Math.min(10 * s, p.hw, p.hh)
+        const x0 = p.x - p.hw - m, x1 = p.x + p.hw + m, y0 = p.y - p.hh - m, y1 = p.y + p.hh + m
+        ctx.save()
+        ctx.globalAlpha *= t
+        ctx.strokeStyle = SILK_LINE
+        ctx.lineWidth = 1.2
+        ctx.beginPath()
+        ctx.moveTo(x0, y0 + L); ctx.lineTo(x0, y0); ctx.lineTo(x0 + L, y0)
+        ctx.moveTo(x1 - L, y0); ctx.lineTo(x1, y0); ctx.lineTo(x1, y0 + L)
+        ctx.moveTo(x1, y1 - L); ctx.lineTo(x1, y1); ctx.lineTo(x1 - L, y1)
+        ctx.moveTo(x0 + L, y1); ctx.lineTo(x0, y1); ctx.lineTo(x0, y1 - L)
+        ctx.stroke()
+        ctx.restore()
+      }
+
+      // Designator (always upright)
+      ctx.save()
+      ctx.globalAlpha *= t
+      ctx.fillStyle = SILK
+      ctx.font = `${9 * s}px ${MONO}`
+      ctx.textAlign = 'left'
+      ctx.textBaseline = 'bottom'
+      ctx.fillText(p.ref, p.x - p.hw - 5 * s, p.y - p.hh - 8 * s)
+      ctx.restore()
+    }
+
+    function render(now: number) {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+      ctx.clearRect(0, 0, w, h)
+      ctx.globalAlpha = phase === 'fade' ? clamp(1 - (now - phaseAt) / FADE_OUT_MS, 0, 1) : 1
+
+      ctx.drawImage(boardCanvas, 0, 0, w, h)
+      ctx.drawImage(traceCanvas, 0, 0, w, h)
+      for (const p of parts) drawPart(p, now)
+
+      // Glowing heads on the traces currently being drawn
+      for (const pipe of pipes) {
+        if (!pipe.started || pipe.done) continue
+        ctx.save()
+        ctx.fillStyle = '#f4ffd6'
+        ctx.shadowColor = NEON
+        ctx.shadowBlur = 18
+        ctx.beginPath()
+        ctx.arc(pipe.head.x, pipe.head.y, Math.max(3, 4.5 * scale), 0, Math.PI * 2)
+        ctx.fill()
+        ctx.restore()
+      }
+      ctx.globalAlpha = 1
+    }
+
+    // ── Round lifecycle ─────────────────────────────────────────────────
+
+    function resetBoard(now: number) {
+      tctx.setTransform(1, 0, 0, 1, 0, 0)
+      tctx.clearRect(0, 0, traceCanvas.width, traceCanvas.height)
+      tctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+      linked = new Set()
+      layoutBoard(now)
+      drawBoardArt()
+
+      // First pipe always starts at the big chip; the rest pick random parts
+      const starts = [0, ...shuffle(parts.map((_, i) => i).slice(1))]
+      const popDone = now + parts.length * 70 + POP_IN_MS * 0.6
+      pipes = Array.from({ length: Math.min(PIPE_COUNT, parts.length) }, (_, i) => ({
+        at: starts[i % starts.length],
+        path: [], seg: 0, segPos: 0, head: { x: 0, y: 0 }, dest: null,
+        hops: 0, startAt: popDone + i * PIPE_STAGGER, started: false, done: false,
+      }))
+
+      phase = 'build'
+      phaseAt = now
+      roundStart = now
+    }
+
+    function tick(now: number, dt: number) {
+      if (phase === 'build') {
+        for (const pipe of pipes) {
+          if (!pipe.started && now >= pipe.startAt) { pipe.started = true; plan(pipe) }
+          if (pipe.started && !pipe.done) step(pipe, dt, now)
+        }
+        if (pipes.every(p => p.done) || now - roundStart > ROUND_MAX_MS) {
+          phase = 'hold'; phaseAt = now
+        }
+      } else if (phase === 'hold' && now - phaseAt > HOLD_MS) {
+        phase = 'fade'; phaseAt = now
+      } else if (phase === 'fade' && now - phaseAt > FADE_OUT_MS) {
+        resetBoard(now)
+      }
+    }
+
+    /** Reduced motion: route the whole board instantly and show it static. */
+    function renderStatic() {
+      const now = performance.now()
+      resetBoard(now)
+      for (const p of parts) p.bornAt = -Infinity
+      for (const pipe of pipes) { pipe.started = true; plan(pipe) }
+      for (let i = 0; i < 5000 && pipes.some(p => !p.done); i++) {
+        for (const pipe of pipes) if (!pipe.done) step(pipe, 0.1, now)
+      }
+      for (const p of parts) if (p.litAt > 0) p.litAt = -Infinity
+      phase = 'hold'
+      render(now)
+    }
+
+    // ── Sizing / visibility / loop ─────────────────────────────────────
+
+    function resize() {
+      const rect = wrap!.getBoundingClientRect()
+      w = Math.max(1, rect.width)
+      h = Math.max(1, rect.height)
+      dpr = Math.min(2, window.devicePixelRatio || 1)
+      for (const c of [canvas!, traceCanvas, boardCanvas]) {
+        c.width = Math.round(w * dpr)
+        c.height = Math.round(h * dpr)
+      }
+    }
+
+    function frame(now: number) {
+      raf = requestAnimationFrame(frame)
+      const dt = Math.min(0.05, (now - last) / 1000)
+      last = now
+      if (!visible) return
+      tick(now, dt)
+      render(now)
+    }
+
+    function start() {
+      cancelAnimationFrame(raf)
       resize()
-      const t = performance.now()
-      clearCycleStart = t
-      inClearFade = false
-      nodes = []; vias = []; agents = []
-      initNodes(t)
-      initAgents()
+      if (reduceMotion) { renderStatic(); return }
+      last = performance.now()
+      resetBoard(last)
+      raf = requestAnimationFrame(frame)
     }
 
-    window.addEventListener('resize', onResize)
+    let resizeTimer = 0
+    let lastSize = ''
+    const ro = new ResizeObserver(entries => {
+      const { width, height } = entries[0].contentRect
+      const size = `${Math.round(width)}x${Math.round(height)}`
+      if (size === lastSize) return
+      const first = lastSize === ''
+      lastSize = size
+      window.clearTimeout(resizeTimer)
+      if (first) start()
+      else resizeTimer = window.setTimeout(start, 150)
+    })
+    ro.observe(wrap)
+
+    const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting })
+    io.observe(wrap)
+
     return () => {
-      window.removeEventListener('resize', onResize)
-      cancelAnimationFrame(animId)
+      cancelAnimationFrame(raf)
+      window.clearTimeout(resizeTimer)
+      ro.disconnect()
+      io.disconnect()
     }
-  }, [text])
+  }, [])
 
   return (
-    <div ref={containerRef} className="relative w-full h-screen flex items-center justify-center overflow-hidden bg-black">
-      <div className="relative z-10 text-center select-none pointer-events-none">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-mono font-bold text-slate-100 tracking-tighter opacity-90">
-          {text}
-        </h1>
-        {subtitle && (
-          <p className="pcb-subtitle mt-4 text-lg md:text-xl lg:text-2xl">
-            {subtitle}
-          </p>
-        )}
-      </div>
+    <div ref={wrapRef} className={`absolute inset-0 ${className}`} aria-hidden="true">
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>
   )
 }

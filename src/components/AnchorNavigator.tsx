@@ -39,7 +39,7 @@ export function AnchorNavigator({ headings }: AnchorNavigatorProps) {
   return (
     <nav className="hidden lg:block fixed right-8 top-[400px] w-56 pr-4">
       <div className="max-h-[calc(100vh-450px)] overflow-y-auto">
-        <h3 className="text-sm font-semibold text-white mb-4 uppercase tracking-wide">On this page</h3>
+        <h3 className="eyebrow text-cream/60 mb-4">On this page</h3>
         <ul className="space-y-2 text-sm">
           {headings.map((heading) => (
             <li key={heading.id} className={heading.level > 2 ? 'pl-3' : ''}>
@@ -53,7 +53,7 @@ export function AnchorNavigator({ headings }: AnchorNavigatorProps) {
                   }
                 }}
                 className={`block py-1 transition-colors ${
-                  activeId === heading.id ? 'text-blue-400 font-medium' : 'text-gray-400 hover:text-gray-300'
+                  activeId === heading.id ? 'text-lime font-medium' : 'text-cream/50 hover:text-cream'
                 }`}
               >
                 {heading.text}

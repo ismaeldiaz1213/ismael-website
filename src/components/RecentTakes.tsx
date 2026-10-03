@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getBiblePosts } from '../lib/bible'
+import { getPosts } from '../lib/posts'
 import { getGameReviews } from '../lib/gameReviews'
 import { getRecipes } from '../lib/recipes'
 import { getExperiences } from '../lib/experiences'
 import type { ContentItem } from '../lib/content'
+import { ArrowIcon } from './ui/Decor'
 
 type TakeSource = {
   label: string
@@ -14,6 +16,7 @@ type TakeSource = {
 }
 
 const SOURCE_MAP: Record<string, TakeSource> = {
+  duke:         { label: 'Duke Courses', accentClass: 'section-duke',        basePath: '/writing/duke-courses', icon: '🎓' },
   bible:        { label: 'Bible',        accentClass: 'section-bible',       basePath: '/writing/bible',        icon: '📖' },
   games:        { label: 'Game Reviews', accentClass: 'section-games',       basePath: '/writing/game-reviews', icon: '🎮' },
   recipes:      { label: 'Recipes',      accentClass: 'section-recipes',     basePath: '/writing/recipes',      icon: '🍳' },
@@ -22,14 +25,15 @@ const SOURCE_MAP: Record<string, TakeSource> = {
 
 type TakeItem = ContentItem & { sourceKey: string }
 
-export function RecentTakes() {
+export function RecentTakes({ limit = 4 }: { limit?: number }) {
   const [takes, setTakes] = useState<TakeItem[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     let mounted = true
     ;(async () => {
-      const [bible, games, recipes, experiences] = await Promise.all([
+      const [duke, bible, games, recipes, experiences] = await Promise.all([
+        getPosts(),
         getBiblePosts(),
         getGameReviews(),
         getRecipes(),
@@ -38,54 +42,50 @@ export function RecentTakes() {
       if (!mounted) return
 
       const tagged: TakeItem[] = [
+        ...duke.map((p) => ({ ...p, sourceKey: 'duke' })),
         ...bible.map((p) => ({ ...p, sourceKey: 'bible' })),
         ...games.map((p) => ({ ...p, sourceKey: 'games' })),
         ...recipes.map((p) => ({ ...p, sourceKey: 'recipes' })),
         ...experiences.map((p) => ({ ...p, sourceKey: 'experiences' })),
       ]
 
-      tagged.sort((a, b) => {
-        if (!a.date || !b.date) return 0
-        return new Date(b.date).getTime() - new Date(a.date).getTime()
-      })
+      tagged.sort((a, b) => new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime())
 
-      setTakes(tagged.slice(0, 3))
+      setTakes(tagged.slice(0, limit))
       setLoading(false)
     })()
     return () => { mounted = false }
-  }, [])
+  }, [limit])
 
   if (loading || takes.length === 0) return null
 
   return (
-    <div className="recent-takes-grid mt-12">
+    <ul className="divide-y divide-white/10">
       {takes.map((take) => {
         const src = SOURCE_MAP[take.sourceKey]
         const href = `${src.basePath}/${take.slug}`
         return (
-          <Link key={`${take.sourceKey}-${take.slug}`} to={href} className={`block ${src.accentClass}`}>
-            <article className="recent-take-card h-full p-6 rounded-2xl">
-              <div className="recent-take-bar h-0.5 rounded-full mb-4" />
-              <div className="flex items-center gap-2 mb-3">
-                <span className="text-base">{src.icon}</span>
-                <span className="recent-take-label text-xs font-mono uppercase tracking-widest">
-                  {src.label}
-                </span>
+          <li key={`${take.sourceKey}-${take.slug}`} className={src.accentClass}>
+            <Link to={href} className="group flex items-center gap-5 px-4 py-5 rounded-2xl hover:bg-white/[0.04] transition-colors">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-3 mb-1.5">
+                  <span className="recent-take-label inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap">
+                    {src.icon} {src.label}
+                  </span>
+                  {take.date && (
+                    <time className="recent-take-date text-xs font-mono whitespace-nowrap">
+                      {new Date(take.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </time>
+                  )}
+                </div>
+                <h3 className="c-text text-xl font-bold leading-snug">{take.title}</h3>
+                {take.excerpt && <p className="recent-take-excerpt body-text text-sm truncate">{take.excerpt}</p>}
               </div>
-              <h3 className="c-text text-lg font-bold mb-2 leading-snug">{take.title}</h3>
-              {take.excerpt && (
-                <p className="recent-take-excerpt text-sm leading-relaxed line-clamp-3">{take.excerpt}</p>
-              )}
-              {take.date && (
-                <time className="recent-take-date block mt-4 text-xs font-mono">
-                  {new Date(take.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                </time>
-              )}
-              <div className="recent-take-cta mt-4 text-sm font-medium font-mono">Read →</div>
-            </article>
-          </Link>
+              <ArrowIcon className="w-5 h-5 text-cream/40 -rotate-45 group-hover:text-lime group-hover:rotate-0 transition-all shrink-0" />
+            </Link>
+          </li>
         )
       })}
-    </div>
+    </ul>
   )
 }

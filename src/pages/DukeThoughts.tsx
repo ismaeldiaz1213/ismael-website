@@ -1,5 +1,6 @@
 import { WritingListPage } from '../components/WritingListPage'
 import { getPosts } from '../lib/posts'
+import { CourseTranscript } from '../components/CourseTranscript'
 
 export function DukeThoughts() {
   return (
@@ -12,6 +13,7 @@ export function DukeThoughts() {
       basePath="/writing/duke-courses"
       metaDescription="Ismael Diaz's honest reflections on Duke University ECE and CS courses."
       emptyMessage="No course posts yet — working on it!"
+      renderItems={(items) => <CourseTranscript items={items} />}
     />
   )
 }

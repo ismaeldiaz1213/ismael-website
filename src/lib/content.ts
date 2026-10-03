@@ -7,6 +7,8 @@ export interface FrontMatter {
   semester?: string
   published?: boolean
   rating?: number
+  cover?: string
+  coverFit?: string
 }
 
 export interface ContentItem {
@@ -20,6 +22,16 @@ export interface ContentItem {
   content: string
   published: boolean
   rating?: number
+  /** Image for cards: the `cover` frontmatter, else the first image in the post */
+  cover?: string
+  /** "contain" for diagrams/charts that shouldn't be cropped */
+  coverFit?: 'cover' | 'contain'
+}
+
+/** First markdown or <img> image path in a post body. */
+function firstImage(content: string): string | undefined {
+  const m = content.match(/!\[[^\]]*\]\(([^)\s]+)/) ?? content.match(/<img[^>]+src=["']([^"']+)["']/)
+  return m?.[1]
 }
 
 export function parseFrontmatter(raw: string): FrontMatter {
@@ -59,6 +71,10 @@ export function parseFrontmatter(raw: string): FrontMatter {
       out.published = val.toLowerCase() === 'true'
     } else if (key === 'rating') {
       out.rating = parseFloat(val)
+    } else if (key === 'cover') {
+      out.cover = val
+    } else if (key === 'coverFit') {
+      out.coverFit = val
     }
   }
   return out
@@ -94,6 +110,8 @@ export async function loadAllContent(
         content,
         published: fm.published !== false,
         rating: fm.rating,
+        cover: fm.cover ?? firstImage(content),
+        coverFit: fm.coverFit === 'contain' ? 'contain' : 'cover',
       } satisfies ContentItem
     })
   )
@@ -131,6 +149,8 @@ export async function loadSingleContent(
         content,
         published: fm.published !== false,
         rating: fm.rating,
+        cover: fm.cover ?? firstImage(content),
+        coverFit: fm.coverFit === 'contain' ? 'contain' : 'cover',
       } satisfies ContentItem
     }
   }

@@ -5,6 +5,8 @@ date: "2026-04-18"
 tags: [gem5, Computer Architecture]
 category: "Hardware"
 excerpt: "Creating an IEEE-like floating point approximate adder for my ECE 552 course"
+cover: "/projects/floating-point-approximate-adder/pipeline_diagram.png"
+coverFit: "contain"
 ---
 
 As part of the ECE 552: Advanced Computer Architecture course, we had a final project where the prompt was quite simple: create or replicate a paper on a processor improvement. My partner, Zane, and I got to working on several ideas, breaking them down by which stage of the classic 5-stage pipeline they would impact.

@@ -5,6 +5,7 @@ date: "2026-04-18"
 tags: [Digital Systems, FPGA]
 excerpt: "My final project for ECE 350 was creating a Vending Machine!"
 category: "Hardware"
+cover: "/projects/vending-machine/final_result.png"
 ---
 
 ## Overview

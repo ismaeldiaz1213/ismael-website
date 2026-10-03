@@ -5,53 +5,28 @@
   line-height: 1.75;
 }
 
-/* PCB hero subtitle */
-.pcb-subtitle {
-  font-family: 'Inter', sans-serif;
-  color: rgba(148, 163, 184, 0.85);
-  letter-spacing: 0.02em;
-}
-
-/* Typography */
-.heading-1 {
-  font-size: 3.5rem;
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-}
-
-.heading-2 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  line-height: 1.3;
+/* Italic serif accent words, e.g. "Things I <em class="accent-serif">want to say.</em>" */
+.accent-serif {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 
-.heading-3 {
-  font-size: 1.875rem;
-  font-weight: 600;
-  line-height: 1.4;
+/* Texas-sunset gradient text */
+.text-sunset {
+  background: linear-gradient(90deg, var(--rosa), var(--marigold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.heading-4 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.5;
-}
-
-.text-base {
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-.text-sm {
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.text-xs {
+/* Small uppercase mono label used above headings */
+.eyebrow {
+  font-family: 'iA Writer Mono', ui-monospace, monospace;
   font-size: 0.75rem;
-  line-height: 1.4;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 /* Container */
@@ -59,143 +34,6 @@
   max-width: 80rem;
   margin: 0 auto;
   padding: 0 1.5rem;
-}
-
-/* Section spacing */
-.section-y {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
-}
-
-.section-y-sm {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-@media (max-width: 640px) {
-  .section-y {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
-  
-  .section-y-sm {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
-  
-  .heading-1 {
-    font-size: 2.5rem;
-  }
-  
-  .heading-2 {
-    font-size: 2rem;
-  }
-}
-
-/* Button base styles */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  border-radius: 0.5rem;
-  transition: all var(--transition-base);
-  cursor: pointer;
-  border: 2px solid transparent;
-  text-decoration: none;
-}
-
-.btn-primary {
-  background-color: var(--color-primary);
-  color: var(--color-text);
-  border-color: var(--color-primary);
-}
-
-.btn-primary:hover {
-  background-color: var(--color-primary-light);
-  border-color: var(--color-primary-light);
-  box-shadow: 0 0 20px rgba(129, 195, 215, 0.3);
-}
-
-.btn-secondary {
-  background-color: transparent;
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-.btn-secondary:hover {
-  background-color: rgba(129, 195, 215, 0.1);
-  box-shadow: 0 0 20px rgba(129, 195, 215, 0.2);
-}
-
-.btn-lg {
-  padding: 0.875rem 1.75rem;
-  font-size: 1rem;
-}
-
-.btn-md {
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-}
-
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.75rem;
-}
-
-/* Card base styles */
-.card {
-  background-color: rgba(23, 66, 91, 0.5);
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  transition: all var(--transition-base);
-}
-
-.card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: 0 0 30px rgba(129, 195, 215, 0.15);
-}
-
-.card-primary {
-  background: linear-gradient(135deg, rgba(47, 102, 144, 0.15), rgba(129, 195, 215, 0.1));
-}
-
-/* Badge base styles */
-.badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1px solid var(--color-border);
-  background-color: rgba(129, 195, 215, 0.1);
-  color: var(--color-accent);
-}
-
-/* Divider */
-.divider {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
-  margin: 2rem 0;
-}
-
-/* Link with accent */
-.link {
-  color: var(--color-accent);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: all var(--transition-fast);
-}
-
-.link:hover {
-  border-bottom-color: var(--color-accent);
-}
-
-/* Focus styles for accessibility */
-.focus-ring:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(129, 195, 215, 0.5);
 }
 
 /* ─── Color utilities ──────────────────────────────────────────────────────── */
@@ -211,7 +49,6 @@
 .c-bg-card         { background-color: var(--color-bg-card); }
 .c-bg-card-subtle  { background-color: var(--color-card-bg-subtle); }
 .c-bg-icon         { background-color: var(--color-icon-placeholder); }
-.c-section-glass   { background-color: var(--color-section-glass-bg); backdrop-filter: blur(8px); }
 
 /* ─── Border utilities ─────────────────────────────────────────────────────── */
 .c-border       { border-color: var(--color-border); }
@@ -219,6 +56,72 @@
 .c-border-l     { border-left: 1px solid var(--color-border); }
 .c-border-t     { border-top: 1px solid var(--color-border); }
 .c-border-card  { border: 1px solid var(--color-card-border-subtle); }
+
+/* ─── Surfaces ─────────────────────────────────────────────────────────────── */
+/* The one card look used everywhere: rounded, soft border, faint top sheen */
+.surface {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0) 40%),
+    var(--navy);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+.surface-hover {
+  transition: transform 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.25s, box-shadow 0.25s;
+}
+.surface-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.7);
+}
+
+/* Big Duke-blue panel (hero cards on hub pages, "let's connect", etc.) */
+.panel-duke {
+  background:
+    radial-gradient(120% 90% at 85% 0%, rgba(124, 196, 255, 0.35), transparent 55%),
+    radial-gradient(90% 80% at 0% 100%, rgba(46, 230, 214, 0.12), transparent 60%),
+    linear-gradient(160deg, #0a5bc4 0%, var(--duke) 45%, var(--duke-royal) 100%);
+  border-radius: var(--radius-panel);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+/* Faint dot grid, like an unpopulated PCB */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Arrow-in-a-circle used on clickable cards */
+.arrow-bubble {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: var(--lime);
+  color: var(--night);
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(.2,.8,.2,1);
+}
+.group:hover .arrow-bubble { transform: rotate(-45deg) scale(1.08); }
+
+/* ─── Sticker (rotated pill with a little drop shadow) ─────────────────────── */
+.sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  font-family: 'Bricolage Grotesque Variable', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.35);
+  transform: rotate(var(--tilt, -4deg));
+  transition: transform 0.3s cubic-bezier(.3,1.6,.5,1);
+}
+.sticker:hover { transform: rotate(0deg) scale(1.06); }
 
 /* ─── InfoCard ─────────────────────────────────────────────────────────────── */
 .info-card {
@@ -229,119 +132,100 @@
 /* ─── Tag pill ─────────────────────────────────────────────────────────────── */
 .tag-pill {
   background-color: var(--color-tag-bg);
-  border: 1px solid var(--color-border);
-  color: var(--color-accent);
+  border: 1px solid rgba(124, 196, 255, 0.2);
+  color: var(--sky);
 }
 
 /* ─── Navigation ───────────────────────────────────────────────────────────── */
-.nav-root {
-  background-color: var(--color-nav-bg);
-  border-color: var(--color-border);
-}
-.nav-logo-img {
-  border: 1px solid var(--color-accent);
+.nav-pill {
+  background: rgba(11, 23, 56, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 .nav-alias-tooltip {
-  background-color: var(--color-primary);
+  background-color: var(--navy-2);
   border: 1px solid var(--color-border-strong);
-  color: var(--color-accent);
-  box-shadow: var(--shadow-md);
+  color: var(--cream);
 }
-.nav-link        { color: var(--color-accent); opacity: 0.7; }
-.nav-mobile-link { color: var(--color-text);   opacity: 0.7; }
-.nav-social      { color: var(--color-accent); opacity: 0.6; }
-.nav-hamburger-btn { background-color: var(--color-hamburger-btn); }
-.nav-bar           { background-color: var(--color-accent); }
-.nav-bar--top-open { transform: rotate(45deg) translateY(5px) translateX(4px); }
-.nav-bar--mid-open { opacity: 0; }
-.nav-bar--bot-open { transform: rotate(-45deg) translateY(-6px) translateX(7px); }
 
 /* ─── Detail page layout ───────────────────────────────────────────────────── */
 .detail-header {
-  border-color: var(--color-border);
-  background-color: var(--color-detail-header-bg);
+  background:
+    radial-gradient(80% 120% at 100% 0%, color-mix(in srgb, var(--section-accent, var(--sky)) 22%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy-2), var(--navy));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
 }
 
-/* ─── Hub pages (Writing, Misc hero section) ───────────────────────────────── */
-.hub-hero {
-  background: linear-gradient(
-    160deg,
-    rgba(10, 28, 50, 0.95) 0%,
-    var(--color-bg-dark) 100%
-  );
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+/* ─── Hub hero background word ─────────────────────────────────────────────── */
+.hub-bg-word {
+  color: #fff;
+  opacity: 0.07;
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
 }
-.hub-bg-word { color: var(--color-text); opacity: 0.05; }
 
 /* ─── Hub cards (section cards on Writing/Misc) ────────────────────────────── */
 .hub-card {
-  background: linear-gradient(
-    145deg,
-    color-mix(in srgb, var(--section-accent) 9%, rgba(10, 22, 40, 0.9)) 0%,
-    rgba(10, 22, 40, 0.7) 100%
-  );
-  border: 1px solid color-mix(in srgb, var(--section-accent) 28%, transparent);
-  box-shadow: 0 0 0 0 transparent, inset 0 1px 0 color-mix(in srgb, var(--section-accent) 15%, transparent);
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--section-accent) 16%, transparent), transparent 60%),
+    var(--navy);
+  border: 1px solid color-mix(in srgb, var(--section-accent) 22%, transparent);
+  border-radius: var(--radius-card);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s cubic-bezier(.2,.8,.2,1);
 }
 .hub-card:hover {
   border-color: color-mix(in srgb, var(--section-accent) 60%, transparent);
-  box-shadow: 0 8px 32px color-mix(in srgb, var(--section-accent) 18%, transparent), inset 0 1px 0 color-mix(in srgb, var(--section-accent) 25%, transparent);
-  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -16px color-mix(in srgb, var(--section-accent) 35%, transparent);
+  transform: translateY(-4px) rotate(-0.4deg);
 }
 .hub-card-icon {
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: 0.75rem;
-  background-color: color-mix(in srgb, var(--section-accent) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--section-accent) 30%, transparent);
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 1.1rem;
+  background-color: color-mix(in srgb, var(--section-accent) 18%, transparent);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  transition: transform 0.3s cubic-bezier(.3,1.6,.5,1);
 }
-.hub-card-bar {
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(to right, var(--section-accent), transparent);
-  margin-bottom: 1.25rem;
-  opacity: 0.7;
-  transition: opacity 0.2s;
-}
-.hub-card:hover .hub-card-bar { opacity: 1; }
-.hub-card-desc { color: var(--color-body-text); font-family: 'Inter', sans-serif; opacity: 0.75; }
-.hub-card-cta  { color: var(--section-accent); opacity: 0.85; font-size: 0.875rem; }
+.hub-card:hover .hub-card-icon { transform: rotate(-8deg) scale(1.1); }
+.hub-card-desc { color: var(--color-body-text); opacity: 0.8; }
+.hub-card-cta  { color: var(--section-accent); }
+.hub-card-cta .arrow-bubble { background: var(--section-accent); }
 
 /* ─── Writing list page ────────────────────────────────────────────────────── */
 .writing-list-header {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--section-accent) 8%, var(--color-bg-dark)) 0%,
-    var(--color-bg-dark) 100%
-  );
-  border-bottom: 1px solid color-mix(in srgb, var(--section-accent) 20%, transparent);
+  background:
+    radial-gradient(70% 120% at 0% 0%, color-mix(in srgb, var(--section-accent) 28%, transparent), transparent 60%),
+    linear-gradient(160deg, var(--navy-2), var(--navy));
+  border: 1px solid color-mix(in srgb, var(--section-accent) 25%, transparent);
+  border-radius: var(--radius-panel);
 }
-.writing-list-glow {
-  background: var(--section-accent);
-  filter: blur(80px);
+.writing-list-back  { color: var(--section-accent); }
+.writing-list-count {
+  color: var(--section-accent);
+  background: color-mix(in srgb, var(--section-accent) 14%, transparent);
 }
-.writing-list-back  { color: var(--section-accent); opacity: 0.7; }
-.writing-list-count { color: var(--section-accent); opacity: 0.6; }
 
 /* ─── Weather page ─────────────────────────────────────────────────────────── */
-.weather-city-btn        { border-color: var(--color-border);  color: var(--color-text); }
-.weather-city-btn-active { border-color: var(--color-accent);  color: var(--color-accent); }
+.weather-city-btn        { border-color: var(--color-border);  color: var(--color-text); border-radius: 9999px; }
+.weather-city-btn-active { border-color: var(--lime); background: var(--lime); color: var(--night); border-radius: 9999px; font-weight: 600; }
 .weather-section {
   border-color: var(--color-border);
+  border-radius: var(--radius-card) !important;
+  background-color: var(--navy) !important;
 }
-.weather-radar-iframe { border: none; border-radius: 1rem; }
+.weather-radar-iframe { border: none; border-radius: var(--radius-card); }
 .weather-unit-btn {
-  border-color: var(--color-border);
-  color: var(--color-accent);
+  border-color: var(--color-border-strong);
+  color: var(--sky);
 }
-.tooltip-value-red  { color: #ef4444; }
-.tooltip-value-blue { color: #3b82f6; }
+.tooltip-value-red  { color: var(--chile); }
+.tooltip-value-blue { color: var(--sky); }
 
 /* ─── Resume page ──────────────────────────────────────────────────────────── */
 .resume-iframe {
@@ -349,33 +233,87 @@
   border: 1px solid var(--color-border);
 }
 
-/* ─── PCB animation fade ────────────────────────────────────────────────────── */
-.pcb-animation-mask {
-  -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-}
-
 /* ─── Recent Takes section ─────────────────────────────────────────────────── */
 .recent-takes-grid {
   display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
 }
 .recent-take-card {
-  background: color-mix(in srgb, var(--section-accent) 5%, var(--color-bg-card));
-  border: 1px solid color-mix(in srgb, var(--section-accent) 15%, transparent);
-  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  background:
+    radial-gradient(100% 70% at 100% 0%, color-mix(in srgb, var(--section-accent) 14%, transparent), transparent 60%),
+    var(--navy);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  transition: border-color 0.25s, transform 0.25s cubic-bezier(.2,.8,.2,1), box-shadow 0.25s;
 }
 .recent-take-card:hover {
-  border-color: color-mix(in srgb, var(--section-accent) 45%, transparent);
-  box-shadow: 0 0 20px color-mix(in srgb, var(--section-accent) 12%, transparent);
-  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--section-accent) 50%, transparent);
+  box-shadow: 0 18px 40px -16px color-mix(in srgb, var(--section-accent) 30%, transparent);
+  transform: translateY(-4px);
 }
-.recent-take-bar {
-  background-color: var(--section-accent);
-  opacity: 0.7;
+.recent-take-label {
+  color: var(--section-accent);
+  background: color-mix(in srgb, var(--section-accent) 14%, transparent);
 }
-.recent-take-label { color: var(--section-accent); opacity: 0.85; }
-.recent-take-excerpt { color: var(--color-body-text); font-family: 'Inter', sans-serif; opacity: 0.8; }
-.recent-take-date   { color: var(--color-text-secondary); opacity: 0.6; }
-.recent-take-cta    { color: var(--section-accent); opacity: 0.8; }
+.recent-take-excerpt { color: var(--color-body-text); opacity: 0.8; }
+.recent-take-date    { color: var(--color-text-secondary); opacity: 0.7; }
+.recent-take-card .arrow-bubble { background: var(--section-accent); }
+
+/* ─── Long-form prose (markdown pages) ─────────────────────────────────────── */
+.prose :where(a) { color: var(--lime); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.prose :where(img) { border-radius: 1.25rem; }
+.prose :where(h2, h3) { color: var(--cream); }
+.prose :where(blockquote) { border-left-color: var(--rosa); }
+.prose :where(code):not(pre code) {
+  background: rgba(124, 196, 255, 0.12);
+  color: var(--sky);
+  padding: 0.15em 0.4em;
+  border-radius: 0.4rem;
+}
+.prose :where(code):not(pre code)::before,
+.prose :where(code):not(pre code)::after { content: none; }
+.prose :where(pre) { border-radius: 1.25rem; background: #050b1e; border: 1px solid var(--color-border); }
+
+/* ─── Decor helpers ────────────────────────────────────────────────────────── */
+.sticker-tilt-left  { --tilt: -5deg; }
+.sticker-tilt-right { --tilt: 4deg; }
+
+/* ─── Home hero (the PCB board) ────────────────────────────────────────────── */
+/* Blue solder mask, slightly lighter where the light hits the middle */
+.hero-board {
+  background-color: #0a2c6e;
+  background-image:
+    radial-gradient(110% 90% at 50% 35%, #0f3d90 0%, #0a2c6e 55%, #061c4b 100%);
+}
+/* Darker pool behind the headline so it always reads over the traces */
+.hero-halo {
+  background: radial-gradient(ellipse 46% 30% at 50% 44%, rgba(5, 20, 56, 0.85) 0%, rgba(5, 20, 56, 0.45) 55%, transparent 100%);
+}
+
+/* ─── LED strip divider ───────────────────────────────────────────────────── */
+/* One pixel lights at a time and the "data" walks down the strip */
+.ws-pixel {
+  opacity: 0;
+  animation: wsChase 8s linear infinite;
+}
+@keyframes wsChase {
+  0%   { opacity: 0; }
+  1%   { opacity: 1; }
+  6%   { opacity: 0.35; }
+  14%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ws-pixel { animation: none; }
+  .ws-pixel.ws-static { opacity: 1; }
+}
+
+/* ─── Binary divider ───────────────────────────────────────────────────────── */
+.binary-line {
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+  mask-image: linear-gradient(90deg, transparent, black 20%, black 80%, transparent);
+}
+
+/* Arrow bubble tinted with the surrounding section's accent */
+.hub-card-cta-bubble { background: var(--section-accent); }

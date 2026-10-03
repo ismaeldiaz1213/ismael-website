@@ -1,9 +1,11 @@
 /* Import fonts from fontsource */
 @import '@fontsource/ia-writer-mono';
-@import '@fontsource/inter';
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
 @import '@fontsource/inter/600.css';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/instrument-serif/400-italic.css';
 
 /* Import modular styles first - MUST come before @tailwind */
 @import './styles/colors.css';
@@ -17,8 +19,15 @@
 
 html {
   scroll-behavior: smooth;
-  font-family: 'iA Writer Mono', monospace;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
+h1, h2, h3, h4 {
+  font-family: 'Bricolage Grotesque Variable', 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+}
 
-
+::selection {
+  background: var(--lime);
+  color: var(--night);
+}
