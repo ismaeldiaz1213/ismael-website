@@ -49,7 +49,6 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/resume" element={<Lazy><Resume /></Lazy>} />
           <Route path="/misc" element={<Lazy><Misc /></Lazy>} />
           <Route path="/weather" element={<Lazy><Weather /></Lazy>} />
-          {/* Not linked from the nav. Shared by URL only. */}
           <Route path="/games" element={<Lazy><Games /></Lazy>} />
 
           {/* Writing hub */}

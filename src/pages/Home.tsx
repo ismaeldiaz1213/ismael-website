@@ -269,6 +269,75 @@ function Writing() {
   )
 }
 
+function SideQuests() {
+  return (
+    <Section>
+      <SectionHeader
+        eyebrow="side quests"
+        title="Built for"
+        accent="the fun of it."
+        subtitle="I do a lot of random stuff, but it's all for the fun of building."
+        centered={false}
+      />
+
+      <div className="grid lg:grid-cols-2 gap-4 mt-8">
+        {/* Mannabyte Labs */}
+        <a
+          href="https://mannabyte.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group panel-duke relative overflow-hidden p-7 md:p-10 flex flex-col min-h-[340px]"
+        >
+          <div className="dot-grid absolute inset-0 opacity-30 pointer-events-none" />
+          <div className="relative flex flex-col flex-1">
+            <p className="eyebrow text-cream/70 mb-4">my freelance studio</p>
+            <h3 className="text-4xl md:text-5xl text-cream tracking-[-0.03em] mb-4">
+              <span className="font-extrabold">manna</span><span className="font-light">byte</span>{' '}
+              <span className="font-light text-cream/70">Labs</span>
+            </h3>
+            <p className="accent-serif text-2xl md:text-3xl text-cream/90 mb-4">
+              Custom websites you actually own. One price. No subscriptions.
+            </p>
+            <p className="body-text text-cream/75 max-w-lg">
+              My freelance web studio, starting with custom websites for Houston small businesses, in English or
+              Spanish. The name? A <em>byte</em> of manna.
+            </p>
+            <div className="mt-auto pt-8 flex items-center justify-between gap-4">
+              <span className="font-mono text-sm text-cream">mannabyte.com</span>
+              <span className="arrow-bubble"><ArrowIcon className="w-4 h-4 -rotate-45" /></span>
+            </div>
+          </div>
+        </a>
+
+        {/* Instructions Unclear */}
+        <div className="surface overflow-hidden grid sm:grid-cols-[minmax(0,0.9fr)_1fr]">
+          <Link to="/games" className="group relative block min-h-[260px] bg-night">
+            <img
+              src="/projects/instructions-unclear/cover.png"
+              alt="A room from Instructions Unclear, with a red door"
+              className="absolute inset-0 w-full h-full object-cover [image-rendering:pixelated] transition-transform duration-700 group-hover:scale-105"
+            />
+            <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full bg-night/70 backdrop-blur font-mono text-xs text-cream">
+              PICO-8
+            </span>
+          </Link>
+          <div className="p-7 md:p-8 flex flex-col">
+            <p className="eyebrow text-[#b69cff] mb-3">a game I made</p>
+            <h3 className="text-3xl font-bold text-cream leading-tight mb-3">Instructions Unclear</h3>
+            <p className="body-text text-cream/70 mb-6">
+              A tutorial whose narrator really doesn't want you to finish it. Whatever you do, don't press G.
+            </p>
+            <div className="mt-auto flex flex-wrap gap-3">
+              <Button href="/games">Play it <ArrowIcon /></Button>
+              <Button href="/projects/instructions-unclear" variant="secondary">Read the devlog</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
 // ─── Connect ─────────────────────────────────────────────────────────────────
 
 const EMAIL = 'ismael.diaz@duke.edu'
@@ -356,6 +425,7 @@ export function Home() {
       <Datasheet />
       <BinaryDivider className="my-4" />
       <SelectedWork />
+      <SideQuests />
       <Writing />
       <Connect />
     </main>

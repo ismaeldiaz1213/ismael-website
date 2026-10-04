@@ -317,3 +317,6 @@
 
 /* Arrow bubble tinted with the surrounding section's accent */
 .hub-card-cta-bubble { background: var(--section-accent); }
+
+/* Keep PICO-8 screenshots crisp instead of blurry when scaled */
+.prose img[src*="/instructions-unclear/"] { image-rendering: pixelated; }

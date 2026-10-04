@@ -1,6 +1,6 @@
-interface BadgeProps {
+export interface BadgeProps {
   children: React.ReactNode
-  variant?: 'primary' | 'secondary' | 'orange'
+  variant?: 'primary' | 'secondary' | 'orange' | 'rosa'
 }
 
 export function Badge({ children, variant = 'primary' }: BadgeProps) {
@@ -8,6 +8,7 @@ export function Badge({ children, variant = 'primary' }: BadgeProps) {
     primary:   'bg-sky/10 text-sky',
     secondary: 'bg-white/5 text-cream/70',
     orange:    'bg-marigold/15 text-marigold',
+    rosa:      'bg-rosa/15 text-rosa',
   }
 
   return (
@@ -16,3 +17,4 @@ export function Badge({ children, variant = 'primary' }: BadgeProps) {
     </span>
   )
 }
+

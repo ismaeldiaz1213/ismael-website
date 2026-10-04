@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Badge } from './Badge'
+import { categoryVariant } from './categoryVariant'
 import { ArrowIcon } from './Decor'
 import type { Project } from '../../lib/projects'
 
@@ -41,7 +42,7 @@ export function ProjectCard({ project, partNo, wide = false }: ProjectCardProps)
 
       <div className={`flex flex-col flex-1 p-6 ${wide ? 'md:p-10 md:justify-center' : 'md:p-7'}`}>
         <div className="flex items-center gap-2 mb-3">
-          {category && <Badge variant={category.toLowerCase() === 'hardware' ? 'orange' : 'primary'}>{category}</Badge>}
+          {category && <Badge variant={categoryVariant(category)}>{category}</Badge>}
           {date && <span className="font-mono text-xs text-cream/45">{date.slice(0, 4)}</span>}
         </div>
         <h2 className={`font-bold text-cream leading-tight mb-3 ${wide ? 'text-3xl md:text-4xl' : 'text-2xl'}`}>{title}</h2>

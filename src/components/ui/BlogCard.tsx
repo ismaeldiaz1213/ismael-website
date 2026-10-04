@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Badge } from './Badge'
+import { categoryVariant } from './categoryVariant'
 import { ArrowIcon } from './Decor'
 
 interface BlogCardProps {
@@ -18,7 +19,7 @@ export function BlogCard({ title, date, excerpt, tags, href, category, semester 
       <article className="hub-card h-full p-6 md:p-7 flex flex-col">
         <div className="flex items-center justify-between gap-3 mb-4">
           <div className="flex flex-wrap gap-2">
-            {category && <Badge variant={category.toLowerCase() === 'hardware' ? 'orange' : 'primary'}>{category}</Badge>}
+            {category && <Badge variant={categoryVariant(category)}>{category}</Badge>}
             {semester && <Badge variant="secondary">{semester}</Badge>}
           </div>
           {date && <span className="font-mono text-xs text-cream/50 whitespace-nowrap">{date}</span>}

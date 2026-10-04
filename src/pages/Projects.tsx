@@ -3,12 +3,10 @@ import { Section, HubHero, Sticker, ProjectCard } from '../components/ui'
 import { getProjects, type Project } from '../lib/projects'
 import { PageMeta } from '../components/PageMeta'
 
-const FILTERS = ['All', 'Hardware', 'Software'] as const
-type Filter = typeof FILTERS[number]
 
 export function Projects() {
   const [projects, setProjects] = useState<Project[]>([])
-  const [filter, setFilter] = useState<Filter>('All')
+  const [filter, setFilter] = useState('All')
 
   useEffect(() => {
     let mounted = true
@@ -26,7 +24,9 @@ export function Projects() {
     return new Map(oldestFirst.map((p, i) => [p.slug, i + 1]))
   }, [projects])
 
-  const count = (f: Filter) => (f === 'All' ? projects.length : projects.filter(p => p.category === f).length)
+  // One filter per category that actually has projects
+  const filters = ['All', ...Array.from(new Set(projects.map(p => p.category).filter((c): c is string => !!c)))]
+  const count = (f: string) => (f === 'All' ? projects.length : projects.filter(p => p.category === f).length)
   const shown = filter === 'All' ? projects : projects.filter(p => p.category === filter)
 
   return (
@@ -47,7 +47,7 @@ export function Projects() {
       <Section className="pt-10">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <div className="flex gap-1 p-1 rounded-full bg-white/[0.05] border border-white/10" role="group" aria-label="Filter projects">
-            {FILTERS.map(f => (
+            {filters.map(f => (
               <button
                 key={f}
                 onClick={() => setFilter(f)}

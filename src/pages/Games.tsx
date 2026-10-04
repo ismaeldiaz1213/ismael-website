@@ -1,5 +1,5 @@
 import { PageMeta } from '../components/PageMeta'
-import { HubHero } from '../components/ui'
+import { HubHero, Button, ArrowIcon } from '../components/ui'
 
 export function Games() {
   return (
@@ -21,12 +21,19 @@ export function Games() {
         <div className="max-w-4xl mx-auto">
           <div className="section-games hub-card p-6 sm:p-8">
 
-            <h2 className="c-text text-2xl font-bold mb-2">Instructions Unclear</h2>
-            <p className="c-text opacity-60 text-sm leading-relaxed mb-8 max-w-2xl">
-              A weapons testing experience. The narrator gives you instructions.
-              You may follow them. Made for a game jam on the theme
-              &ldquo;worst tutorial ever.&rdquo;
-            </p>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-5 mb-8">
+              <div className="max-w-2xl">
+                <h2 className="c-text text-3xl font-bold mb-2">Instructions Unclear</h2>
+                <p className="body-text text-cream/70">
+                  A top-down shooter disguised as a tutorial that does not want you to finish it. A government
+                  narrator hands you a weapon that only stuns, tells you to never press G, and gets less composed
+                  every time you ignore him. Made for a game jam on the theme &ldquo;worst tutorial ever.&rdquo;
+                </p>
+              </div>
+              <Button href="/projects/instructions-unclear" variant="secondary" className="shrink-0">
+                Read the devlog <ArrowIcon />
+              </Button>
+            </div>
 
             <div className="flex justify-center mb-8">
               <iframe
