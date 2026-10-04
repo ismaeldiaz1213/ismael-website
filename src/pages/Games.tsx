@@ -47,7 +47,7 @@ export function Games() {
                 <ul className="c-text opacity-60 text-sm leading-relaxed space-y-1">
                   <li>Arrow keys to move</li>
                   <li>Z to fire, X to advance dialogue</li>
-                  <li>Z skips a conversation</li>
+                  <li>Q skips a conversation</li>
                 </ul>
               </div>
               <div>
