@@ -8,6 +8,7 @@ import { getGameReviews } from '../lib/gameReviews'
 import { getRecipes } from '../lib/recipes'
 import { getExperiences } from '../lib/experiences'
 import { getBiblePosts } from '../lib/bible'
+import { getDevlogs } from '../lib/devlogs'
 import type { ContentItem } from '../lib/content'
 
 const sections = [
@@ -18,6 +19,14 @@ const sections = [
     icon: '🎓',
     accentClass: 'section-duke',
     fetch: getPosts,
+  },
+  {
+    title: 'Devlogs',
+    description: "Behind the scenes on things I've built, from first draft to playtest.",
+    href: '/writing/devlogs',
+    icon: '🛠️',
+    accentClass: 'section-devlogs',
+    fetch: getDevlogs,
   },
   {
     title: 'Game Reviews',
@@ -68,14 +77,14 @@ export function Writing() {
     <main>
       <PageMeta
         title="Writing | Ismael Diaz"
-        description="Everything Ismael Diaz writes about — Duke courses, game reviews, recipes, experiences, and faith."
+        description="Everything Ismael Diaz writes about — Duke courses, devlogs, game reviews, recipes, experiences, and faith."
       />
 
       <HubHero
         eyebrow="/ writing"
         title="Things I"
         accent="want to say."
-        subtitle="Pick a topic. I write about what I live, study, play, cook, and believe."
+        subtitle="Pick a topic. I write about what I live, study, build, play, cook, and believe."
         bgWord="yap"
       />
 

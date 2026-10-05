@@ -24,6 +24,8 @@ const RecipeDetail = React.lazy(() => import('./pages/RecipeDetail').then(m => (
 const Experiences = React.lazy(() => import('./pages/Experiences').then(m => ({ default: m.Experiences })))
 const ExperienceDetail = React.lazy(() => import('./pages/ExperienceDetail').then(m => ({ default: m.ExperienceDetail })))
 const BibleReflections = React.lazy(() => import('./pages/BibleReflections').then(m => ({ default: m.BibleReflections })))
+const Devlogs = React.lazy(() => import('./pages/Devlogs').then(m => ({ default: m.Devlogs })))
+const DevlogDetail = React.lazy(() => import('./pages/DevlogDetail').then(m => ({ default: m.DevlogDetail })))
 const BibleDetail = React.lazy(() => import('./pages/BibleDetail').then(m => ({ default: m.BibleDetail })))
 
 function PageLoader() {
@@ -61,12 +63,15 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/writing/recipes/:id" element={<Lazy><RecipeDetail /></Lazy>} />
           <Route path="/writing/experiences" element={<Lazy><Experiences /></Lazy>} />
           <Route path="/writing/experiences/:id" element={<Lazy><ExperienceDetail /></Lazy>} />
+          <Route path="/writing/devlogs" element={<Lazy><Devlogs /></Lazy>} />
+          <Route path="/writing/devlogs/:id" element={<Lazy><DevlogDetail /></Lazy>} />
           <Route path="/writing/bible" element={<Lazy><BibleReflections /></Lazy>} />
           <Route path="/writing/bible/:id" element={<Lazy><BibleDetail /></Lazy>} />
 
           {/* Backward-compat redirects */}
           <Route path="/duke-courses" element={<Navigate to="/writing/duke-courses" replace />} />
           <Route path="/duke-courses/:id" element={<DukeRedirect />} />
+          <Route path="/projects/instructions-unclear" element={<Navigate to="/writing/devlogs/instructions-unclear" replace />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>

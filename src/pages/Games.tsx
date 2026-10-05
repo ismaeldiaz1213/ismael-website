@@ -30,7 +30,7 @@ export function Games() {
                   every time you ignore him. Made for a game jam on the theme &ldquo;worst tutorial ever.&rdquo;
                 </p>
               </div>
-              <Button href="/projects/instructions-unclear" variant="secondary" className="shrink-0">
+              <Button href="/writing/devlogs/instructions-unclear" variant="secondary" className="shrink-0">
                 Read the devlog <ArrowIcon />
               </Button>
             </div>

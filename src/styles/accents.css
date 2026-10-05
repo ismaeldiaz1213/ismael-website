@@ -8,3 +8,4 @@
 .section-bible        { --section-accent: var(--marigold); }
 .section-weather      { --section-accent: var(--sky); }
 .section-projects     { --section-accent: var(--lime); }
+.section-devlogs      { --section-accent: var(--lime); }

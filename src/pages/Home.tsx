@@ -329,7 +329,7 @@ function SideQuests() {
             </p>
             <div className="mt-auto flex flex-wrap gap-3">
               <Button href="/games">Play it <ArrowIcon /></Button>
-              <Button href="/projects/instructions-unclear" variant="secondary">Read the devlog</Button>
+              <Button href="/writing/devlogs/instructions-unclear" variant="secondary">Read the devlog</Button>
             </div>
           </div>
         </div>

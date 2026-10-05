@@ -5,6 +5,7 @@ import { getPosts } from '../lib/posts'
 import { getGameReviews } from '../lib/gameReviews'
 import { getRecipes } from '../lib/recipes'
 import { getExperiences } from '../lib/experiences'
+import { getDevlogs } from '../lib/devlogs'
 import type { ContentItem } from '../lib/content'
 import { ArrowIcon } from './ui/Decor'
 
@@ -21,6 +22,7 @@ const SOURCE_MAP: Record<string, TakeSource> = {
   games:        { label: 'Game Reviews', accentClass: 'section-games',       basePath: '/writing/game-reviews', icon: '🎮' },
   recipes:      { label: 'Recipes',      accentClass: 'section-recipes',     basePath: '/writing/recipes',      icon: '🍳' },
   experiences:  { label: 'Experiences',  accentClass: 'section-experiences', basePath: '/writing/experiences',  icon: '✈️'  },
+  devlogs:      { label: 'Devlogs',      accentClass: 'section-devlogs',     basePath: '/writing/devlogs',      icon: '🛠️' },
 }
 
 type TakeItem = ContentItem & { sourceKey: string }
@@ -32,12 +34,13 @@ export function RecentTakes({ limit = 4 }: { limit?: number }) {
   useEffect(() => {
     let mounted = true
     ;(async () => {
-      const [duke, bible, games, recipes, experiences] = await Promise.all([
+      const [duke, bible, games, recipes, experiences, devlogs] = await Promise.all([
         getPosts(),
         getBiblePosts(),
         getGameReviews(),
         getRecipes(),
         getExperiences(),
+        getDevlogs(),
       ])
       if (!mounted) return
 
@@ -47,6 +50,7 @@ export function RecentTakes({ limit = 4 }: { limit?: number }) {
         ...games.map((p) => ({ ...p, sourceKey: 'games' })),
         ...recipes.map((p) => ({ ...p, sourceKey: 'recipes' })),
         ...experiences.map((p) => ({ ...p, sourceKey: 'experiences' })),
+        ...devlogs.map((p) => ({ ...p, sourceKey: 'devlogs' })),
       ]
 
       tagged.sort((a, b) => new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime())

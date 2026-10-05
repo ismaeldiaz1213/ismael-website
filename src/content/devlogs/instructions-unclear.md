@@ -4,7 +4,7 @@ published: true
 date: "2026-10-04"
 tags: [PICO-8, Lua, Game Jam, Claude Code]
 excerpt: "A top-down shooter disguised as a tutorial that doesn't want you to finish it. What building it taught me about making mechanics feel natural."
-category: "Game"
+category: "Devlog"
 cover: "/projects/instructions-unclear/cover.png"
 ---
 

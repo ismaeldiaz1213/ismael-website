@@ -1,5 +1,13 @@
 import React from 'react'
+import { defaultSchema } from 'rehype-sanitize'
 import type { Heading } from '../components/AnchorNavigator'
+
+/**
+ * Sanitize schema for post content. Keeps the default allowlist but leaves
+ * `id`s as written (no `user-content-` prefix), so in-page links like
+ * `[Sources](#sources)` land on `<a id="sources">` anchors in the markdown.
+ */
+export const sanitizeSchema = { ...defaultSchema, clobberPrefix: '' }
 
 /** Converts heading text to a URL-safe ID. */
 export function headingToId(text: string): string {

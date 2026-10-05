@@ -4,14 +4,6 @@ import { HubHero, ArrowIcon } from '../components/ui'
 
 const miscItems = [
   {
-    title: 'Instructions Unclear',
-    description: 'My PICO-8 game. A tutorial whose narrator really does not want you to finish it. Playable in your browser.',
-    href: '/games',
-    icon: '🕹️',
-    accentClass: 'section-games',
-    label: 'Play it',
-  },
-  {
     title: 'Big Brain Weather',
     description: 'Live weather for Houston and Durham with nerdy atmospheric stats. Because why not.',
     href: '/weather',

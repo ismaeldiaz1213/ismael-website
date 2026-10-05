@@ -22,6 +22,17 @@ html {
   font-family: 'Inter', system-ui, sans-serif;
 }
 
+/* Grid items default to min-width: auto, so a truncated or long line inside
+   one stretches the whole column past the viewport on phones. */
+.grid > * {
+  min-width: 0;
+}
+
+/* Long URLs in posts wrap instead of widening the page. */
+.prose a {
+  overflow-wrap: anywhere;
+}
+
 h1, h2, h3, h4 {
   font-family: 'Bricolage Grotesque Variable', 'Inter', sans-serif;
   letter-spacing: -0.02em;

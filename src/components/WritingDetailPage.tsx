@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
-import { extractHeadings, markdownHeadingComponents } from '../lib/markdown'
+import { extractHeadings, markdownHeadingComponents, sanitizeSchema } from '../lib/markdown'
 import { DetailPageLayout } from './ui'
 import { PageMeta } from './PageMeta'
 import type { Heading } from './AnchorNavigator'
@@ -83,7 +83,7 @@ export function WritingDetailPage({
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
           components={markdownHeadingComponents}
         >
           {item.content}

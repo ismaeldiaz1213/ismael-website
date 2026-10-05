@@ -3,13 +3,14 @@
 // A WS2812B strip (60 LEDs/m): 5050 pixel + 100nF decoupling cap per segment,
 // 5V/GND rails along the edges, DO→DI data hopping pixel to pixel, and cut
 // pads between every pixel. Being addressable, a pixel "chases" down the
-// strip in the direction data flows.
+// strip in the direction data flows. Lit in Duke blue, naturally.
 
 const STRIP_PIXELS = 72
 const PITCH = 34        // px per segment
 const STRIP_H = 30
 const COPPER_DIM = 'rgba(216, 162, 74, 0.28)'
 const PAD = '#d8a24a'
+const GLOW_PAD = 22     // room above/below the strip for the glow to bleed into
 
 function StripSegment({ i }: { i: number }) {
   const x0 = i * PITCH
@@ -36,9 +37,10 @@ function StripSegment({ i }: { i: number }) {
       <circle cx={cx} cy={mid} r={5.4} fill="#c3c7d1" />
       <path d={`M${cx - 7.5} ${mid - 4.5} l3 -3`} stroke="#9aa0ad" strokeWidth="0.8" />
       {/* The lit pixel (animated) */}
-      <g className={`ws-pixel ${i % 6 === 0 ? 'ws-static' : ''}`} style={{ animationDelay: `${(i * 0.09 - 8).toFixed(2)}s` }}>
-        <circle cx={cx} cy={mid} r={11} fill="url(#ws-glow)" />
-        <circle cx={cx} cy={mid} r={5.4} fill="#e6ffa8" />
+      <g className={`ws-pixel ${i % 6 === 0 ? 'ws-static' : ''}`} style={{ animationDelay: `${(i * 0.06 - 6).toFixed(2)}s` }}>
+        <circle cx={cx} cy={mid} r={22} fill="url(#ws-glow)" />
+        <rect x={cx - 7.5} y={mid - 7.5} width={15} height={15} rx={1.6} fill="#3d8bff" />
+        <circle cx={cx} cy={mid} r={5.4} fill="url(#ws-core)" />
       </g>
     </g>
   )
@@ -50,18 +52,25 @@ export function LedStripDivider({ className = '' }: { className?: string }) {
   return (
     <div className={`relative w-full overflow-hidden ${className}`} aria-hidden="true">
       <svg
-        viewBox={`0 0 ${width} ${STRIP_H + 16}`}
+        viewBox={`0 0 ${width} ${STRIP_H + GLOW_PAD * 2}`}
         width={width}
-        height={STRIP_H + 16}
+        height={STRIP_H + GLOW_PAD * 2}
         className="relative left-1/2 -translate-x-1/2 max-w-none"
       >
         <defs>
           <radialGradient id="ws-glow">
-            <stop offset="0%" stopColor="#c8ff3d" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#c8ff3d" stopOpacity="0" />
+            <stop offset="0%" stopColor="#7cc4ff" stopOpacity="1" />
+            <stop offset="35%" stopColor="#2b7fff" stopOpacity="0.75" />
+            <stop offset="70%" stopColor="#00539b" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#00539b" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="ws-core">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="60%" stopColor="#d6ecff" />
+            <stop offset="100%" stopColor="#7cc4ff" />
           </radialGradient>
         </defs>
-        <g transform="translate(0 8)">
+        <g transform={`translate(0 ${GLOW_PAD})`}>
           {/* Black flex PCB with the 5V and GND rails under the mask */}
           <rect x={0} y={0} width={width} height={STRIP_H} fill="#0b0d12" />
           <rect x={0} y={0} width={width} height={1} fill="rgba(255,255,255,0.08)" />

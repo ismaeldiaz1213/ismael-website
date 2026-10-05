@@ -12,6 +12,15 @@ interface AnchorNavigatorProps {
 
 export function AnchorNavigator({ headings }: AnchorNavigatorProps) {
   const [activeId, setActiveId] = useState<string>('')
+  // Stays hidden while the post's header card is on screen, so the two never overlap
+  const [pastHeader, setPastHeader] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setPastHeader(window.scrollY > 320)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -37,8 +46,12 @@ export function AnchorNavigator({ headings }: AnchorNavigatorProps) {
   if (headings.length === 0) return null
 
   return (
-    <nav className="hidden lg:block fixed right-8 top-[400px] w-56 pr-4">
-      <div className="max-h-[calc(100vh-450px)] overflow-y-auto">
+    <nav
+      className={`hidden xl:block fixed right-8 top-28 w-56 pr-4 transition-opacity duration-300 ${
+        pastHeader ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div className="max-h-[calc(100vh-9rem)] overflow-y-auto">
         <h3 className="eyebrow text-cream/60 mb-4">On this page</h3>
         <ul className="space-y-2 text-sm">
           {headings.map((heading) => (
