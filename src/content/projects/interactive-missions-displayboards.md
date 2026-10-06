@@ -1,5 +1,5 @@
 ---
-title: "Interactive Missions Display Boards"
+title: "Interactive Missions Display Boards, Part 1"
 published: true
 date: "2026-02-21"
 tags: [React, Church, In Progress]
@@ -7,6 +7,8 @@ excerpt: "Creating a digital platform for church members to read, learn, and pra
 category: "Software"
 cover: "/projects/interactive-missions-displayboards/display_completion.jpg"
 ---
+
+> **Update (October 2026):** There's now a [Part 2](/projects/interactive-missions-displayboards-part-2)! The website is live, the migration from PowerPoint is underway, and there's a roadmap to an open-source launch in May 2027. This post is the original story of how it all started.
 
 ## Beginnings
 
@@ -163,3 +165,7 @@ The repository will keep you up to date on what phase I’m in during the rework
 I owe a deep gratitude to my Pastor for backing the project from day one. His trust made the whole thing possible.
 
 And most importantly, I owe a lot to Manny Robles. He mentored me through the planning and design of this entire mini engineering project. I learned a tremendous amount about project planning, execution, and thinking through details because of him. A lot of my engineering intuition honestly traces back to the way he approached problems.
+
+---
+
+> **Keep reading:** [Part 2](/projects/interactive-missions-displayboards-part-2) picks up where this left off: what the React website can do now, some feedback that stung, why getting missionary data is harder than writing code, and the roadmap to letting any church copy this.

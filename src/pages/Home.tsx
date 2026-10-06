@@ -8,7 +8,7 @@ import { getProjects, type Project } from '../lib/projects'
 import natureImage from '../assets/nature-2025.jpeg'
 import duke_smif from '../assets/duke_smif_image.jpeg'
 
-const FEATURED_PROJECT = 'interactive-missions-displayboards'
+const FEATURED_PROJECT = 'interactive-missions-displayboards-part-2'
 
 function Hero() {
   return (
@@ -207,7 +207,7 @@ function SelectedWork() {
 
       <div className="grid lg:grid-cols-12 gap-4 mt-8">
         <FeatureCard
-          title={featured?.title ?? 'Interactive Missions Display Boards'}
+          title="Interactive Missions Display Boards"
           description={featured?.excerpt ?? ''}
           image="/projects/interactive-missions-displayboards/display_completion.jpg"
           imageAlt="Interactive missions display boards in a church foyer"
