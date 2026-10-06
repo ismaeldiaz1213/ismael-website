@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif">
+  <rect width="1200" height="800" rx="36" fill="#0b1738"/>
+  <text x="60" y="78" fill="#fff6e9" font-size="34" font-weight="800">A proposed ECE 356: one stack, built in pieces</text>
+  <text x="60" y="114" fill="#fff6e9" fill-opacity="0.6" font-size="19">Every module runs the same loop. Each one ends with code that works and tests that pass.</text>
+
+  <!-- module columns -->
+  <g font-size="17">
+    <!-- headers -->
+    <g>
+      <rect x="60" y="150" width="255" height="64" rx="18" fill="#7cc4ff"/>
+      <text x="187.5" y="190" text-anchor="middle" fill="#060d24" font-weight="800" font-size="21">1 · Application</text>
+      <rect x="335" y="150" width="255" height="64" rx="18" fill="#7cc4ff"/>
+      <text x="462.5" y="190" text-anchor="middle" fill="#060d24" font-weight="800" font-size="21">2 · Transport</text>
+      <rect x="610" y="150" width="255" height="64" rx="18" fill="#7cc4ff"/>
+      <text x="737.5" y="190" text-anchor="middle" fill="#060d24" font-weight="800" font-size="21">3 · Network</text>
+      <rect x="885" y="150" width="255" height="64" rx="18" fill="#7cc4ff"/>
+      <text x="1012.5" y="190" text-anchor="middle" fill="#060d24" font-weight="800" font-size="21">4 · Link</text>
+    </g>
+    <!-- arrows between headers -->
+    <g fill="#7cc4ff">
+      <path d="M318 182 l12 0 m-6 -6 l6 6 -6 6" stroke="#7cc4ff" stroke-width="3" fill="none"/>
+      <path d="M593 182 l12 0 m-6 -6 l6 6 -6 6" stroke="#7cc4ff" stroke-width="3" fill="none"/>
+      <path d="M868 182 l12 0 m-6 -6 l6 6 -6 6" stroke="#7cc4ff" stroke-width="3" fill="none"/>
+    </g>
+    <!-- topic line -->
+    <g fill="#fff6e9" fill-opacity="0.55" font-size="15" text-anchor="middle">
+      <text x="187.5" y="240">HTTP, DNS, sockets</text>
+      <text x="462.5" y="240">reliability, TCP, congestion</text>
+      <text x="737.5" y="240">IP, forwarding, routing</text>
+      <text x="1012.5" y="240">Ethernet, ARP, switching</text>
+    </g>
+  </g>
+
+  <!-- loop rows -->
+  <g font-size="17">
+    <!-- row labels + bands -->
+    <g>
+      <rect x="60" y="262" width="1080" height="70" rx="18" fill="#12214d"/>
+      <rect x="60" y="342" width="1080" height="70" rx="18" fill="#12214d"/>
+      <rect x="60" y="422" width="1080" height="70" rx="18" fill="#12214d"/>
+      <rect x="60" y="502" width="1080" height="70" rx="18" fill="#12214d"/>
+    </g>
+    <g fill="#c8ff3d" font-weight="800" font-size="18">
+      <text x="84" y="304">LEARN</text>
+      <text x="84" y="384">BUILD</text>
+      <text x="84" y="464">BREAK</text>
+      <text x="84" y="544">DEFEND</text>
+    </g>
+    <g fill="#fff6e9" font-size="17">
+      <text x="200" y="304">Short lecture on the why, a live demo or packet trace, then the reading for details</text>
+      <text x="200" y="384">One checkpoint of the shared stack, with an API guide and tests that actually pass</text>
+      <text x="200" y="464">Scenario quiz: "A coworker says ___. Why are they wrong?"</text>
+      <text x="200" y="544">Short design review: what did you choose, what are its weaknesses, how would it scale?</text>
+    </g>
+  </g>
+
+  <!-- capstone -->
+  <rect x="60" y="596" width="1080" height="82" rx="20" fill="none" stroke="#c8ff3d" stroke-width="2.5"/>
+  <text x="84" y="630" fill="#c8ff3d" font-weight="800" font-size="18">CAPSTONE</text>
+  <text x="84" y="660" fill="#fff6e9" font-size="17">Wire the four checkpoints together into the router project. Your stack talks to the staff's and your classmates'.</text>
+
+  <!-- foundation -->
+  <rect x="60" y="696" width="1080" height="70" rx="20" fill="#00539b"/>
+  <text x="84" y="728" fill="#fff6e9" font-weight="800" font-size="18">FOUNDATION (week 1, all semester)</text>
+  <text x="84" y="752" fill="#fff6e9" fill-opacity="0.85" font-size="16">One dev container that runs the same on Intel, Apple Silicon, and Windows · an API cheat sheet · tests checked on every platform</text>
+</svg>

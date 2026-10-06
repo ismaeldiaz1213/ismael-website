@@ -334,3 +334,6 @@
 
 /* In-page anchors in posts (TL;DR, verse jumps, footnotes) clear the sticky nav */
 .prose [id] { scroll-margin-top: 6rem; }
+
+/* Wide tables in posts scroll sideways inside the post instead of widening the page */
+.prose table { display: block; overflow-x: auto; }
